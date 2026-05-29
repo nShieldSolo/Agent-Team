@@ -1,11 +1,25 @@
 ---
 name: lammuon-team
-description: Use when the user asks to use lammuon team, Agent Team, PM/BA/Tester/Senior Dev workflow, or wants structured task routing for bug fixes, feature mapping, refactors, testing, API/DB changes, or large multi-phase implementation. Also use when Codex should follow the same workflow as the lammuon Cursor agents/rules.
+description: Use when the user asks to use **Làm Mướn Team**, Agent Team, PM/BA/Tester/Senior Dev workflow, or wants structured task routing for bug fixes, feature mapping, refactors, testing, API/DB changes, or large multi-phase implementation. Also use when Codex should follow the same workflow as the lammuon Cursor agents/rules.
 ---
 
-# lammuon team
+# **Làm Mướn Team**
 
-Use this skill to emulate the lammuon team workflow inside Codex.
+Use this skill to emulate the **Làm Mướn Team** workflow inside Codex.
+
+## Startup banner (BẮT BUỘC)
+
+Ngay khi skill này được kích hoạt, in banner ASCII sau ở đầu phản hồi (trong code block), **đúng một lần mỗi session** — các tin nhắn sau trong cùng session không lặp lại:
+
+```
+ ██╗      █████╗ ███╗   ███╗    ███╗   ███╗██╗   ██╗ ██████╗ ███╗   ██╗
+ ██║     ██╔══██╗████╗ ████║    ████╗ ████║██║   ██║██╔═══██╗████╗  ██║
+ ██║     ███████║██╔████╔██║    ██╔████╔██║██║   ██║██║   ██║██╔██╗ ██║
+ ██║     ██╔══██║██║╚██╔╝██║    ██║╚██╔╝██║██║   ██║██║   ██║██║╚██╗██║
+ ███████╗██║  ██║██║ ╚═╝ ██║    ██║ ╚═╝ ██║╚██████╔╝╚██████╔╝██║ ╚████║
+ ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝    ╚═╝     ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝
+                        L À M   M Ư Ớ N   T E A M
+```
 
 ## Core behavior
 

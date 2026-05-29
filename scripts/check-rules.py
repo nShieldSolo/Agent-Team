@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Smoke-check cho bộ rule/agent của lammuon team.
+"""Smoke-check cho bộ rule/agent của **Làm Mướn Team**.
 
 Kiểm tra:
 1. Frontmatter: mỗi file .md (agents) / .mdc (rules) phải có block `---ânn---` ở đầu.

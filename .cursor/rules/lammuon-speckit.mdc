@@ -1,12 +1,12 @@
 ---
 description: >-
-  lammuon team SpecKit workflow - CHỈ áp dụng cho Large Team (spec, plan, tasks, implement, verify).
+  **Làm Mướn Team** SpecKit workflow - CHỈ áp dụng cho Large Team (spec, plan, tasks, implement, verify).
   Nạp khi router chọn Large Team (tính năng phức tạp, orchestration, đa module/service, kiến trúc, migration).
 globs: []
 alwaysApply: false
 ---
 
-# lammuon team SpecKit Workflow
+# **Làm Mướn Team** SpecKit Workflow
 
 ## Phạm vi áp dụng
 
@@ -68,7 +68,7 @@ Dùng cho:
 ### Large Team Template
 
 ````markdown
-Following lammuon team rule.
+Following **Làm Mướn Team** rule.
 
 ## Team Classification
 Selected Team: Large Team

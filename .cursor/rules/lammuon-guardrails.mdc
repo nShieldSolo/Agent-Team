@@ -1,14 +1,14 @@
 ---
-description: lammuon team guardrails CORE - hard safety rules (git/file/DB/scope) + activation anchor, always on
+description: **Làm Mướn Team** guardrails CORE - hard safety rules (git/file/DB/scope) + activation anchor, always on
 globs: []
 alwaysApply: true
 ---
 
-# lammuon team Guardrails (Core)
+# **Làm Mướn Team** Guardrails (Core)
 
 ## Purpose
 
-Hard safety rules cho mọi lammuon team agent (PM, BA, Tester, Senior Developer). Đây là phần **luôn bật, gọn**. Chi tiết template xác nhận + checklist DB/API/Infra nằm ở `lammuon-guardrails-detail` (nạp khi cần).
+Hard safety rules cho mọi **Làm Mướn Team** agent (PM, BA, Tester, Senior Developer). Đây là phần **luôn bật, gọn**. Chi tiết template xác nhận + checklist DB/API/Infra nằm ở `lammuon-guardrails-detail` (nạp khi cần).
 
 ## Activation (khi nào kích hoạt team)
 

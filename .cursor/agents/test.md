@@ -42,6 +42,6 @@ Use this structure:
 | Pre-commit / PR | Project-wide verify or CI-equivalent command |
 | Flaky failure | Note flakiness; suggest re-run or isolation, do not assume green |
 
-## In lammuon team repos
+## In **Làm Mướn Team** repos
 
 If `lammuon-testing` or team templates apply, align test case language and honesty rules with those rules. This agent still **runs** tests; detailed test-case design may belong to `lammuon-tester`.

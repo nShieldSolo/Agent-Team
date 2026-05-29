@@ -1,13 +1,13 @@
 ---
 description: >-
-  lammuon team output templates - template markdown CHUẨN và BẮT BUỘC cho mỗi bước
+  **Làm Mướn Team** output templates - template markdown CHUẨN và BẮT BUỘC cho mỗi bước
   của Small Team và Medium Team (Large Team dùng lammuon-speckit). Áp dụng khi một
   subagent   (BA, Tester, Senior Developer) sắp xuất output markdown cho user.
 globs: []
 alwaysApply: false
 ---
 
-# lammuon team Output Templates
+# **Làm Mướn Team** Output Templates
 
 ## Phạm vi áp dụng
 

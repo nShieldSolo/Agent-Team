@@ -1,16 +1,16 @@
 ---
 description: >-
-  lammuon team testing rules - test case tiếng Việt, automation, regression, API/UI/DB testing.
+  **Làm Mướn Team** testing rules - test case tiếng Việt, automation, regression, API/UI/DB testing.
   Nạp khi task có test/verify/QA, bug fix, feature mapping, đổi API/UI/DB, hoặc khi Tester làm việc.
 globs: []
 alwaysApply: false
 ---
 
-# lammuon team Testing Rules
+# **Làm Mướn Team** Testing Rules
 
 ## Purpose
 
-All lammuon team agents must make testing visible and practical.
+All **Làm Mướn Team** agents must make testing visible and practical.
 
 Tester owns test design and verification.
 

@@ -1,16 +1,16 @@
 ---
 description: >-
-  lammuon team router - phân loại task thành Small/Medium/Large Team, chọn agents/skills/MCP,
+  **Làm Mướn Team** router - phân loại task thành Small/Medium/Large Team, chọn agents/skills/MCP,
   hiển thị flow điều phối. Nạp cho MỌI task dev/bug/feature/mapping/refactor/test/DB/API.
 globs: []
 alwaysApply: false
 ---
 
-# lammuon team Router
+# **Làm Mướn Team** Router
 
 ## Identity
 
-This is the main router rule for **lammuon team**.
+This is the main router rule for **Làm Mướn Team**.
 
 Meaning:
 
@@ -20,7 +20,7 @@ Meaning:
 When this rule is active, start with:
 
 ```markdown
-Following lammuon team rule.
+Following **Làm Mướn Team** rule.
 ````
 
 ---
@@ -51,7 +51,7 @@ The router must decide:
 Mọi phản hồi dùng rule này PHẢI mở đầu bằng khối điều phối gọn dưới đây, bằng **tiếng Việt**. Mục tiêu: user nhìn vào là hiểu ngay (1) Router chọn team gì + vì sao, (2) các subagent sẽ làm gì, (3) đang chạy tới bước mấy / tổng bao nhiêu bước.
 
 ```markdown
-Following lammuon team rule.
+Following **Làm Mướn Team** rule.
 
 ## 🧭 Router
 - Team: <Small | Medium | Large> — <lý do 1 dòng, ngắn nhất có thể>
@@ -84,7 +84,7 @@ Following lammuon team rule.
 Với task **rất nhỏ / 1 bước** (typo, đổi 1 dòng text, đổi config nhỏ, câu hỏi nhanh, xem nhanh) → **BỎ bảng Flow đầy đủ**, chỉ in khối Router gọn:
 
 ```markdown
-Following lammuon team rule.
+Following **Làm Mướn Team** rule.
 
 ## 🧭 Router
 - Team: Small — <lý do 1 dòng>
@@ -575,7 +575,7 @@ Use this exact order:
 
 ---
 
-## Rule map (lammuon team)
+## Rule map (**Làm Mướn Team**)
 
 | Rule | Khi nạp | always-on? |
 |---|---|---|

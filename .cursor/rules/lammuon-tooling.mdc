@@ -1,12 +1,12 @@
 ---
 description: >-
-  lammuon team tooling - map Skills và MCP theo role (PM/BA/Tester/Senior Dev) để dùng đúng,
+  **Làm Mướn Team** tooling - map Skills và MCP theo role (PM/BA/Tester/Senior Dev) để dùng đúng,
   gọi khi cần, chi phí tối thiểu. Nạp khi cần quyết định dùng skill/MCP nào cho một bước.
 globs: []
 alwaysApply: false
 ---
 
-# lammuon team Tooling (Skills + MCP)
+# **Làm Mướn Team** Tooling (Skills + MCP)
 
 ## Nguyên tắc cost
 

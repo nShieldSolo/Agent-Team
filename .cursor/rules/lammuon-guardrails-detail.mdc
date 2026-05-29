@@ -1,13 +1,13 @@
 ---
 description: >-
-  lammuon team guardrails DETAIL - template xác nhận (package/file/migration) và checklist
+  **Làm Mướn Team** guardrails DETAIL - template xác nhận (package/file/migration) và checklist
   chi tiết DB, multi-tenant, API, Infra/DevOps. Nạp khi sắp xoá file, upgrade package,
   tạo migration, đổi schema/index, đổi API contract, hoặc đụng Docker/CI/CD/cloud/infra.
 globs: []
 alwaysApply: false
 ---
 
-# lammuon team Guardrails (Detail)
+# **Làm Mướn Team** Guardrails (Detail)
 
 Phần chi tiết của `lammuon-guardrails`. Chỉ cần khi thực hiện hành động nhạy cảm.
 
