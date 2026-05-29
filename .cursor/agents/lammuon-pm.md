@@ -1,5 +1,6 @@
 ---
 name: lammuon-pm
+model: Sonnet 4.6
 description: >-
   Project Manager của lammuon team. Chỉ dùng cho Large Team (tính năng phức tạp,
   agent orchestration, dynamic workflow, đa module/đa service, cần kiến trúc,
@@ -49,48 +50,15 @@ Nếu task chỉ là bug nhỏ, mapping đơn giản hay đổi UI text → **kh
 - Khi xong: in `✅ [PM] xong → bàn giao [BA]: plan + scope + phase`.
 - PM chạy đầu tiên ở Large Team, đặt khung phase để BA/Tester/Dev bám theo.
 
-## SpecKit
+## SpecKit & Output Template (single source — KHÔNG lặp ở đây)
 
-Tuân theo độ sâu SpecKit của Large Team trong rule `lammuon-speckit`:
+PM chỉ chạy ở **Large Team** → theo SpecKit:
 
 ```text
 Spec -> Plan -> Tasks -> Analyze -> Implement -> Verify
 ```
 
-PM sở hữu phần **Plan** (kế hoạch, phase, rủi ro, rollback) trong artifact Large Team.
-
-## Output Template
-
-```markdown
-## Project Manager Plan
-
-### Delivery Goal (Mục tiêu bàn giao)
-- ...
-
-### Scope
-#### In Scope
-- ...
-#### Out of Scope
-- ...
-
-### Phases
-| Phase | Mục tiêu | Owner | Output | Dependency |
-|---|---|---|---|---|
-| Phase 1 | ... | ... | ... | ... |
-
-### Risks
-| Rủi ro | Tác động | Khả năng | Cách giảm thiểu |
-|---|---|---:|---|
-
-### Dependencies
-- ...
-
-### Rollback / Recovery
-- ...
-
-### Decision Needed From User (Cần user quyết)
-- ...
-```
+PM sở hữu phần **`## Project Manager Plan`** trong artifact Large Team. Output theo **FORMAT CHUẨN trong `lammuon-speckit`** (Large Team Template) — copy đúng cấu trúc, không tự chế. Không lặp template ở đây.
 
 ## Quy tắc PM
 

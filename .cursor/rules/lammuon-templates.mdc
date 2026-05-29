@@ -2,9 +2,8 @@
 description: >-
   lammuon team output templates - template markdown CHUẨN và BẮT BUỘC cho mỗi bước
   của Small Team và Medium Team (Large Team dùng lammuon-speckit). Áp dụng khi một
-  subagent (BA, Tester, Senior Developer) sắp xuất output markdown cho user.
-globs:
-  - "**/*"
+  subagent   (BA, Tester, Senior Developer) sắp xuất output markdown cho user.
+globs: []
 alwaysApply: false
 ---
 
@@ -56,13 +55,47 @@ Large Team   -> KHÔNG dùng rule này. Dùng lammuon-speckit (template SpecKit 
 
 ## Template + Mẫu điền sẵn
 
-> Phần "Mẫu" là ví dụ minh hoạ chuẩn chất lượng. Khi làm thật, thay nội dung nhưng **giữ nguyên cấu trúc heading**.
+Mỗi bước có 2 phần:
+- **FORMAT CHUẨN**: agent **PHẢI copy đúng** các heading này, đúng thứ tự, không thêm/bớt section bắt buộc.
+- **Ví dụ điền**: minh hoạ chuẩn chất lượng để biết mức chi tiết cần đạt.
+
+> Chỗ `<...>` là phần agent điền. Section không áp dụng → ghi `Không áp dụng` (không xoá heading).
 
 ### T1. Tester — Bug Investigation (`## Tester Analysis`)
 
-Skeleton chuẩn: xem `lammuon-tester` (mục Bug Investigation Template).
+**FORMAT CHUẨN — copy đúng cấu trúc này:**
 
-Mẫu điền sẵn:
+```markdown
+## Tester Analysis
+
+### Reported Behavior (Hành vi được báo)
+- <hành vi user báo>
+
+### Actual Behavior (Hành vi thực tế)
+- <thực tế quan sát được>
+
+### Expected Behavior (Hành vi mong đợi)
+- <hành vi đúng; nếu chưa rõ → set ⛔ và hỏi user, KHÔNG đoán>
+
+### Reproduction Steps (Bước tái hiện)
+1. <bước 1>
+2. <bước 2>
+
+### Impacted Area (Khu vực ảnh hưởng)
+- <file/màn/API liên quan>
+
+### Regression Risk (Rủi ro hồi quy)
+- <vùng có thể bị ảnh hưởng>
+
+### Test Cases
+| Mã case | Mô tả | Điều kiện | Bước test | Kết quả mong đợi |
+|---|---|---|---|---|
+| TC-001 | <tái hiện bug> | ... | ... | ... |
+| TC-002 | <xác minh fix> | ... | ... | ... |
+| TC-003 | <regression liên quan> | ... | ... | ... |
+```
+
+**Ví dụ điền:**
 
 ```markdown
 ## Tester Analysis
@@ -98,9 +131,40 @@ Mẫu điền sẵn:
 
 ### T2. Senior Dev — Implementation (`## Senior Developer Notes`)
 
-Skeleton chuẩn: xem `lammuon-senior-dev` (Output Template).
+**FORMAT CHUẨN — copy đúng cấu trúc này:**
 
-Mẫu điền sẵn (rút gọn):
+```markdown
+## Senior Developer Notes
+
+### Related Files / Areas
+- <file/khu vực liên quan>
+
+### Current Implementation
+- <code hiện tại làm gì>
+
+### Root Cause / Technical Reason
+- <nguyên nhân kỹ thuật; có bằng chứng>
+
+### Implementation Approach
+- <cách fix nhỏ nhất, an toàn>
+
+### Files Changed
+- <danh sách file đã đổi>
+
+### Why this approach
+- <lý do chọn cách này>
+
+### Out of Scope
+- <những gì cố tình KHÔNG đụng>
+
+### Risk
+- <mức rủi ro + phạm vi ảnh hưởng>
+
+### Verification Support
+- <hỗ trợ Tester verify: log, test ID...>
+```
+
+**Ví dụ điền:**
 
 ```markdown
 ## Senior Developer Notes
@@ -135,9 +199,49 @@ Mẫu điền sẵn (rút gọn):
 
 ### T3. BA — Spec nhẹ Medium Team (`## BA Spec`)
 
-Skeleton chuẩn: xem `lammuon-ba` (Output Template — Medium Team).
+**FORMAT CHUẨN — copy đúng cấu trúc này:**
 
-Mẫu điền sẵn (rút gọn):
+```markdown
+## BA Spec
+
+### User Intent
+- <ý định thật của user>
+
+### Goal
+- <mục tiêu cần đạt>
+
+### Current Behavior
+- <hành vi hiện tại>
+
+### Target Behavior
+- <hành vi đích>
+
+### Mapping Rules
+| Source Area | Target Area | Rule | Notes |
+|---|---|---|---|
+| <nguồn> | <đích> | <quy tắc> | <ghi chú> |
+
+### Business Rules
+- BR-001: <rule>
+
+### In Scope
+- <trong phạm vi>
+
+### Out of Scope
+- <ngoài phạm vi>
+
+### Assumptions
+- <giả định>
+
+### Open Questions
+- <câu hỏi còn vướng; nếu không có ghi "Không áp dụng">
+
+### Acceptance Criteria
+- AC-001: <tiêu chí nghiệm thu đo được>
+- AC-002: <...>
+```
+
+**Ví dụ điền:**
 
 ```markdown
 ## BA Spec
@@ -181,6 +285,19 @@ Mẫu điền sẵn (rút gọn):
 
 ### T4. Tester — Test Cases theo AC (`## Test Cases`)
 
+**FORMAT CHUẨN — copy đúng cấu trúc này (mỗi AC ≥ 1 case; có case dữ liệu rỗng + phân quyền nếu liên quan):**
+
+```markdown
+## Test Cases
+| Mã case | Mô tả | Điều kiện | Bước test | Kết quả mong đợi |
+|---|---|---|---|---|
+| TC-001 | <bám AC-001> | ... | ... | ... |
+| TC-002 | <bám AC-002> | ... | ... | ... |
+| TC-003 | <dữ liệu rỗng> | ... | ... | ... |
+```
+
+**Ví dụ điền:**
+
 ```markdown
 ## Test Cases
 | Mã case | Mô tả | Điều kiện | Bước test | Kết quả mong đợi |
@@ -193,9 +310,36 @@ Mẫu điền sẵn (rút gọn):
 
 ### T5. Tester — Test Execution + Regression (`## Test Execution`)
 
-Skeleton chuẩn: xem `lammuon-tester` (Test Execution Template) và `lammuon-testing` (Regression Testing).
+**FORMAT CHUẨN — copy đúng cấu trúc này:**
 
-Mẫu điền sẵn:
+```markdown
+## Test Execution
+
+### Tests Run
+- <các TC đã chạy>
+
+### Result
+- Passed: <...>
+- Failed: <...>
+- Not Run: <...>
+
+### Evidence
+- <bằng chứng: log, status code, ảnh...>
+
+### Remaining Risk
+- <rủi ro còn lại>
+
+## Regression Testing
+### Areas to Recheck
+- <vùng cần kiểm tra lại>
+
+### Regression Cases
+| Mã case | Khu vực | Lý do cần test | Kết quả mong đợi |
+|---|---|---|---|
+| REG-001 | <khu vực> | <lý do> | <kết quả> |
+```
+
+**Ví dụ điền:**
 
 ```markdown
 ## Test Execution
@@ -224,7 +368,7 @@ Mẫu điền sẵn:
 | REG-001 | Màn B lưu dữ liệu | Dùng chung validation với A | Màn B vẫn lưu bình thường |
 ```
 
-> Nếu **không chạy được test**, dùng template `## Test Execution Limitation` trong `lammuon-tester` thay cho phần Result — và nói rõ rủi ro còn lại. Không được khai test pass khi chưa chạy.
+> Nếu **không chạy được test**, dùng template `## Test Execution Limitation` trong `lammuon-testing` thay cho phần Result — và nói rõ rủi ro còn lại. Không được khai test pass khi chưa chạy.
 
 ---
 

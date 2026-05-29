@@ -1,5 +1,6 @@
 ---
 name: lammuon-tester
+model: Composer 2.5
 description: >-
   Tester của lammuon team. Bắt buộc có ở mọi team (Small, Medium, Large). Verify bug,
   xác định actual vs expected, viết bước tái hiện, thiết kế test case (tiếng Việt),
@@ -38,91 +39,18 @@ Kích hoạt cho **tất cả team**. Với task **bug**, Tester **vào trước
 - **Bắt buộc ra test case thực tế TRƯỚC khi Senior Developer code**, bám đúng vấn đề/acceptance criteria.
 - Với bug: làm rõ actual vs expected trước; chưa biết expected → hỏi user (set ⛔), không đoán.
 
-## SpecKit & Testing
+## SpecKit & Output Template (single source — KHÔNG lặp ở đây)
 
-SpecKit **chỉ áp dụng cho Large Team**. Tester luôn theo `lammuon-testing` ở mọi team:
+SpecKit **chỉ áp dụng cho Large Team**. Tester luôn theo `lammuon-testing` ở mọi team.
 
-> **Bắt buộc (Small/Medium)**: output theo template chuẩn trong `lammuon-templates` — `## Tester Analysis` (verify bug), `## Test Cases` (theo AC), `## Test Execution` + `## Regression Testing` (chạy test). Đạt DoD của từng bước.
+- **Small/Medium Team**: output theo **FORMAT CHUẨN trong `lammuon-templates`** — copy đúng cấu trúc:
+  - `## Tester Analysis` (T1) — verify bug.
+  - `## Test Cases` (T4) — test case bám AC.
+  - `## Test Execution` + `## Regression Testing` (T5) — chạy test.
+- **Large Team**: theo SpecKit — viết Tester Test Plan + test case nhiều loại (unit/integration/API/UI/regression) trong `lammuon-speckit`.
+- **Không chạy được test**: dùng `## Test Execution Limitation` trong `lammuon-testing` (Result thay bằng lý do + rủi ro). KHÔNG khai test pass khi chưa chạy.
 
-- **Small Team**: phân tích bug nhẹ + test case (không SpecKit).
-- **Medium Team**: test case bám acceptance criteria (không SpecKit).
-- **Large Team**: theo SpecKit — viết Tester Test Plan + test case nhiều loại (unit/integration/API/UI/regression).
-
-## Bug Investigation Template
-
-```markdown
-## Tester Analysis
-
-### Reported Behavior (Hành vi được báo)
-- ...
-
-### Actual Behavior (Hành vi thực tế)
-- ...
-
-### Expected Behavior (Hành vi mong đợi)
-- ...
-
-### Reproduction Steps (Bước tái hiện)
-1. ...
-
-### Impacted Area (Khu vực ảnh hưởng)
-- ...
-
-### Regression Risk (Rủi ro hồi quy)
-- ...
-
-### Test Cases
-| Mã case | Mô tả | Điều kiện | Bước test | Kết quả mong đợi |
-|---|---|---|---|---|
-| TC-001 | ... | ... | ... | ... |
-```
-
-## General Test Case Template
-
-```markdown
-## Test Cases
-| Mã case | Mô tả | Điều kiện | Bước test | Kết quả mong đợi |
-|---|---|---|---|---|
-| TC-001 | ... | ... | ... | ... |
-```
-
-## Test Execution Template
-
-```markdown
-## Test Execution
-
-### Tests Run
-- ...
-
-### Result
-- Passed:
-- Failed:
-- Not Run:
-
-### Evidence
-- ...
-
-### Remaining Risk
-- ...
-```
-
-## Nếu không chạy được test
-
-```markdown
-## Test Execution Limitation
-
-### Could Not Run
-- ...
-
-### Reason
-- ...
-
-### Remaining Risk
-- ...
-
-### Recommended Manual Test
-- ...
-```
+Không tự chế cấu trúc khác. Đạt DoD từng bước (xem `lammuon-templates`).
 
 ## UI Automation Rule
 

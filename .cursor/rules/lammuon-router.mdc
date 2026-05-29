@@ -1,7 +1,8 @@
 ---
-description: lammuon team router - classify task into Small, Medium, or Large Team and select agents/skills
-globs:
-  - "**/*"
+description: >-
+  lammuon team router - phân loại task thành Small/Medium/Large Team, chọn agents/skills/MCP,
+  hiển thị flow điều phối. Nạp cho MỌI task dev/bug/feature/mapping/refactor/test/DB/API.
+globs: []
 alwaysApply: false
 ---
 
@@ -547,238 +548,25 @@ Use this exact order:
 3. Check complexity.
 4. Select smallest safe team.
 5. Select agents.
-6. Select skills.
+6. Select skills + MCP theo role/task (xem lammuon-tooling). Không gọi tool thừa.
 7. Select execution mode.
 8. Produce required response header.
 9. Use SpecKit ONLY for Large Team (lammuon-speckit rule). Small/Medium: bỏ SpecKit, dùng output template của agent + lammuon-testing.
 10. Output mỗi bước Small/Medium PHẢI theo template chuẩn trong lammuon-templates (BẮT BUỘC, không tự chế cấu trúc khác).
-11. Follow safety rules from lammuon-guardrails rule.
+11. Follow safety rules from lammuon-guardrails (core). Khi làm hành động nhạy cảm (xoá file/upgrade package/migration/đổi API contract/infra) → nạp lammuon-guardrails-detail.
 12. Follow testing rules from lammuon-testing rule.
-
-
----
-
-# File: .cursor/rules/lammuon-testing.mdc
-
-```markdown
----
-description: lammuon team testing rules - Vietnamese test cases, automation, regression, API/UI/DB testing
-globs:
-  - "**/*"
-alwaysApply: true
----
-
-# lammuon team Testing Rules
-
-## Purpose
-
-All lammuon team agents must make testing visible and practical.
-
-Tester owns test design and verification.
-
-Senior Developer must support testability.
-
----
-
-## Language Rule
-
-Tester must write test cases in Vietnamese.
-
----
-
-## Standard Test Case Format
-
-Use this table:
-
-```markdown
-| Mã case | Mô tả | Điều kiện | Bước test | Kết quả mong đợi |
-|---|---|---|---|---|
-| TC-001 | ... | ... | ... | ... |
-````
-
----
-
-## Bug Fix Testing
-
-For bug fixes, include:
-
-* Reproduce bug.
-* Verify fix.
-* Regression for nearby behavior.
-* Edge case if relevant.
-
-Template:
-
-```markdown
-## Test Cases
-| Mã case | Mô tả | Điều kiện | Bước test | Kết quả mong đợi |
-|---|---|---|---|---|
-| TC-001 | Tái hiện bug | ... | ... | Bug được tái hiện đúng như mô tả |
-| TC-002 | Xác minh bug đã fix | ... | ... | Hành vi đúng như expected |
-| TC-003 | Regression flow liên quan | ... | ... | Flow cũ vẫn hoạt động bình thường |
 ```
 
 ---
 
-## Feature Mapping Testing
+## Rule map (lammuon team)
 
-For mapping from screen/module A to B, include:
-
-* Source behavior still works.
-* Target behavior matches source rule.
-* Empty data.
-* Invalid data.
-* Permission/role if relevant.
-* Regression.
-
-Template:
-
-```markdown
-## Test Cases
-| Mã case | Mô tả | Điều kiện | Bước test | Kết quả mong đợi |
-|---|---|---|---|---|
-| TC-001 | Kiểm tra behavior gốc ở màn A | Có dữ liệu hợp lệ | Thực hiện flow ở màn A | Màn A vẫn hoạt động như trước |
-| TC-002 | Kiểm tra behavior được apply sang màn B | Có dữ liệu hợp lệ | Thực hiện flow ở màn B | Màn B hoạt động theo rule từ màn A |
-| TC-003 | Kiểm tra dữ liệu rỗng | Không có dữ liệu mapping | Mở màn B | Hiển thị empty state hoặc xử lý đúng |
-| TC-004 | Kiểm tra quyền user | User có/không có quyền | Thực hiện thao tác | Hệ thống xử lý đúng theo quyền |
-```
-
----
-
-## UI Text Change Testing
-
-If only UI text changes:
-
-* Verify text is correct.
-* Verify no business logic changed.
-* Do not require API unit tests.
-* Check UI automation if framework exists.
-
-Template:
-
-```markdown
-## Test Cases
-| Mã case | Mô tả | Điều kiện | Bước test | Kết quả mong đợi |
-|---|---|---|---|---|
-| TC-001 | Kiểm tra text hiển thị đúng | Mở màn hình liên quan | Quan sát label/button/message | Text hiển thị đúng |
-| TC-002 | Kiểm tra không đổi logic | Thực hiện flow cũ | Submit/Save/Search như trước | Logic vẫn hoạt động bình thường |
-```
-
----
-
-## API Testing
-
-Use API tests when:
-
-* Endpoint behavior changes.
-* Validation changes.
-* Request/response changes.
-* Permission changes.
-* Status code changes.
-* Integration behavior changes.
-
-Template:
-
-```markdown
-## API Test Cases
-| Mã case | Request | Điều kiện | Kết quả mong đợi |
-|---|---|---|---|
-| API-001 | ... | Dữ liệu hợp lệ | Trả response đúng |
-| API-002 | ... | Dữ liệu không hợp lệ | Trả validation error đúng |
-| API-003 | ... | User không có quyền | Trả lỗi quyền đúng |
-```
-
----
-
-## DB Testing
-
-Use DB testing when:
-
-* Query changes.
-* Index changes.
-* Schema changes.
-* Data read/write changes.
-* Tenant/Site filtering is involved.
-
-Must check:
-
-* Read behavior.
-* Write behavior if any.
-* Tenant/Site filtering.
-* Rollback/migration if any.
-* Performance if query/indexing is involved.
-
----
-
-## UI Automation Rule
-
-If web automation framework exists and UI behavior changes:
-
-* Add/update automation test.
-* Especially for button text, labels, validation messages, important flow behavior.
-
-If no automation is added, state:
-
-```markdown
-## UI Automation Not Added
-### Reason
-- ...
-
-### Risk
-- ...
-
-### Recommended Manual Test
-- ...
-```
-
----
-
-## Test Execution Honesty
-
-Never claim tests passed if they were not run.
-
-If tests cannot be run, write:
-
-```markdown
-## Test Execution Limitation
-### Could Not Run
-- ...
-
-### Reason
-- ...
-
-### Remaining Risk
-- ...
-
-### Recommended Manual Test
-- ...
-```
-
----
-
-## Regression Testing
-
-Use regression testing when:
-
-* Shared logic changed.
-* Feature mapping reuses existing behavior.
-* Refactor performed.
-* API behavior changed.
-* DB query changed.
-* UI flow changed.
-
-Template:
-
-```markdown
-## Regression Testing
-### Areas to Recheck
-- ...
-
-### Regression Cases
-| Mã case | Khu vực | Lý do cần test | Kết quả mong đợi |
-|---|---|---|---|
-| REG-001 | ... | ... | ... |
-```
-
-```
-```
+| Rule | Khi nạp | always-on? |
+|---|---|---|
+| `lammuon-guardrails` (core) | Luôn | ✅ |
+| `lammuon-router` | Task dev/bug/feature/test | ❌ (description) |
+| `lammuon-templates` | Small/Medium xuất output | ❌ (description) |
+| `lammuon-speckit` | Large Team | ❌ (description) |
+| `lammuon-testing` | Có test/verify/QA | ❌ (description) |
+| `lammuon-tooling` | Cần chọn skill/MCP | ❌ (description) |
+| `lammuon-guardrails-detail` | Hành động nhạy cảm | ❌ (description) |

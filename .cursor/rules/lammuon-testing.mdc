@@ -1,8 +1,9 @@
 ---
-description: lammuon team testing rules - Vietnamese test cases, automation, regression, API/UI/DB testing
-globs:
-  - "**/*"
-alwaysApply: true
+description: >-
+  lammuon team testing rules - test case tiếng Việt, automation, regression, API/UI/DB testing.
+  Nạp khi task có test/verify/QA, bug fix, feature mapping, đổi API/UI/DB, hoặc khi Tester làm việc.
+globs: []
+alwaysApply: false
 ---
 
 # lammuon team Testing Rules
@@ -214,6 +215,5 @@ Template:
 ### Regression Cases
 | Mã case | Khu vực | Lý do cần test | Kết quả mong đợi |
 |---|---|---|---|
-| REG-001 | ... | ... | ... |---
-alwaysApply: true
----
+| REG-001 | ... | ... | ... |
+```

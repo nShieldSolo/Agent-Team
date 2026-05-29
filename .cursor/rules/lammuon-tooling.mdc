@@ -1,0 +1,60 @@
+---
+description: >-
+  lammuon team tooling - map Skills và MCP theo role (PM/BA/Tester/Senior Dev) để dùng đúng,
+  gọi khi cần, chi phí tối thiểu. Nạp khi cần quyết định dùng skill/MCP nào cho một bước.
+globs: []
+alwaysApply: false
+---
+
+# lammuon team Tooling (Skills + MCP)
+
+## Nguyên tắc cost
+
+1. **Không gọi thừa**: chỉ đọc skill / gọi MCP khi bước hiện tại thực sự cần. Skill chỉ tốn token khi được Read.
+2. **Smallest team, smallest tool**: ưu tiên không tool; chỉ leo thang khi cần.
+3. **Read-first với MCP DB/SSH**: đọc trước, không thao tác phá huỷ (theo `lammuon-guardrails`).
+4. **Browser MCP**: chuẩn hoá **`user-playwright`**. KHÔNG dùng `cursor-ide-browser` / `user-chrome-devtools` trừ khi user yêu cầu rõ.
+
+---
+
+## Skills theo role
+
+| Role / Tình huống | Skill | Khi nào dùng |
+|---|---|---|
+| Tester — UI/E2E automation | `playwright-best-practices`, `e2e-testing-patterns` | Khi có/đang dựng test E2E, fix test flaky |
+| Senior Dev — dựng UI mới | `ui-ux-pro-max` | Khi build/redesign UI, cần chuẩn UI/UX |
+| PM / BA — Large Team phức tạp | `sequential-thinking` | Khi phân rã vấn đề lớn, nhiều nhánh quyết định |
+| Cuối chu kỳ — làm PR | `babysit`, `split-to-prs` | Khi giữ PR merge-ready / tách PR nhỏ |
+
+> Không auto-load. Chỉ Read skill khi đúng tình huống ở trên.
+
+---
+
+## MCP theo role
+
+| Tình huống | MCP | Ghi chú |
+|---|---|---|
+| DB MSSQL | `user-mssql` | Read-first; không SQL phá huỷ; check tenant/Site |
+| DB MongoDB | `user-mongodb` | Read-first |
+| UI / E2E test | `user-playwright` | **Browser MCP chuẩn**. Chỉ 1 browser MCP |
+| Planning phức tạp | `user-sequential-thinking` | Chỉ Large Team |
+| Nhớ spec/decision xuyên session | `user-agentmemory` | Lưu spec/quyết định Large Team để khỏi suy luận lại |
+| Deploy / infra / remote | `user-ssh` | Chỉ khi cần; cần xác nhận (guardrail infra) |
+
+### Browser MCP — chuẩn hoá
+
+- Dùng `user-playwright` cho mọi tác vụ browser/UI test.
+- `cursor-ide-browser` và `user-chrome-devtools`: **không dùng** trừ khi user yêu cầu. Để giảm overhead, nên tắt 2 server này trong Cursor settings (việc này user tự làm trong settings, agent không tự đổi config).
+
+---
+
+## Map nhanh theo task type
+
+| Task type | Skill gợi ý | MCP gợi ý |
+|---|---|---|
+| Bug fix (Small) | (thường không cần) | DB MCP nếu bug liên quan query |
+| Feature mapping (Medium) | — | DB MCP nếu mapping đụng dữ liệu |
+| UI text / UI flow | `ui-ux-pro-max` (nếu dựng UI) | `user-playwright` nếu có E2E |
+| API change | — | DB MCP nếu liên quan; không browser |
+| DB change | — | `user-mssql` / `user-mongodb` (read-first) |
+| New complex feature (Large) | `sequential-thinking` | `user-agentmemory`, `user-playwright`, DB MCP |

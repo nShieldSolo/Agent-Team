@@ -1,0 +1,112 @@
+---
+description: >-
+  lammuon team guardrails DETAIL - template xác nhận (package/file/migration) và checklist
+  chi tiết DB, multi-tenant, API, Infra/DevOps. Nạp khi sắp xoá file, upgrade package,
+  tạo migration, đổi schema/index, đổi API contract, hoặc đụng Docker/CI/CD/cloud/infra.
+globs: []
+alwaysApply: false
+---
+
+# lammuon team Guardrails (Detail)
+
+Phần chi tiết của `lammuon-guardrails`. Chỉ cần khi thực hiện hành động nhạy cảm.
+
+---
+
+## Package Change — Template xác nhận
+
+```markdown
+## Package Change Required
+### Package
+- ...
+### Why needed
+- ...
+### Risk
+- ...
+### Alternative
+- ...
+### Requires confirmation
+Yes
+```
+
+---
+
+## File Deletion — Template xác nhận
+
+```markdown
+## File Deletion Risk
+### File
+- ...
+### Why deletion is needed
+- ...
+### Safer alternative
+- ...
+### Requires confirmation
+Yes
+```
+
+---
+
+## Migration — Template xác nhận
+
+Migration cần xác nhận rõ nếu có: drop column/table, data deletion, mass update, irreversible change, production-impacting schema, large index change.
+
+```markdown
+## Migration Guardrail
+### Migration Needed?
+- Yes/No/Unknown
+### Reason
+- ...
+### Migration Type
+- Schema / Data / Index / Seed / Rollback
+### Safety Plan
+- ...
+### Rollback Plan
+- ...
+### Requires User Confirmation
+- Yes/No
+```
+
+---
+
+## DB Safety (chi tiết)
+
+- Determine read/write/schema/index/migration impact.
+- Check tenant/Site filtering if multi-tenant.
+- Prefer read-first validation. Avoid destructive SQL.
+- Avoid migration unless explicitly requested. Explain rollback risk.
+
+### Multi-Tenant Query Rule
+
+Nếu project dùng `Site`, ưu tiên nguyên tắc composite index khi liên quan:
+
+```text
+(Site, <FK or Filter Field>)
+```
+
+Không tự thêm index trừ khi được yêu cầu.
+
+---
+
+## API Change (chi tiết)
+
+Khi hành vi API đổi, xác định: endpoint, request shape, response shape, validation logic, status codes, permission rules, clients impacted.
+
+Nếu đổi response contract → cảnh báo compatibility risk; ưu tiên backward-compatible trừ khi user yêu cầu khác.
+
+---
+
+## Infrastructure / DevOps (chi tiết)
+
+Khi đụng Docker, CI/CD, Nginx, Traefik, Nomad, AWS, registry, deployment config:
+
+- Identify environment + blast radius.
+- Avoid production-impacting changes without confirmation.
+- Prefer dry-run/read-only checks first. Explain rollback steps.
+- Do not modify secrets. Do not expose tokens/passwords.
+
+---
+
+## UI/Text Change (chi tiết)
+
+Nếu task chỉ đổi UI text: không đổi business logic / API / DB; không thêm API unit test. Có UI automation → thêm/cập nhật test liên quan; không có → nêu lý do + rủi ro.

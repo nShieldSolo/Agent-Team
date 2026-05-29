@@ -1,7 +1,8 @@
 ---
-description: lammuon team SpecKit workflow - CHỈ áp dụng cho Large Team (spec, plan, tasks, implement, verify)
-globs:
-  - "**/*"
+description: >-
+  lammuon team SpecKit workflow - CHỈ áp dụng cho Large Team (spec, plan, tasks, implement, verify).
+  Nạp khi router chọn Large Team (tính năng phức tạp, orchestration, đa module/service, kiến trúc, migration).
+globs: []
 alwaysApply: false
 ---
 
@@ -120,6 +121,9 @@ None. I can proceed with the available context.
 - ...
 
 ### Rollback / Recovery
+- ...
+
+### Decision Needed From User (Cần user quyết)
 - ...
 
 ## BA Product Spec
