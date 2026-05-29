@@ -28,7 +28,12 @@ Repo này chưa có code ứng dụng. Đây là bộ cấu hình Cursor cho **l
     lammuon-testing.mdc
     lammuon-tooling.mdc
 scripts/
+  install.sh
   check-rules.py
+codex/
+  skills/
+    lammuon-team/
+      SKILL.md
 .gitattributes
 README.md
 ```
@@ -78,7 +83,47 @@ PM -> BA -> Tester -> Senior Developer -> Tester
 
 ## Cách dùng trong Cursor
 
-1. Mở repo này bằng Cursor.
+### Cài tự động từ GitHub
+
+Cài vào project hiện tại:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.sh | bash
+```
+
+Cài vào project khác bằng path:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.sh | bash -s -- /path/to/project
+```
+
+Script chỉ copy các file `lammuon-*` vào `.cursor/agents` và `.cursor/rules`. Nếu có file cũ trùng tên và khác nội dung, script sẽ backup file cũ thành `*.bak.<timestamp>` trước khi ghi đè.
+
+### Cài global cho Cursor/Codex
+
+Cài global Cursor subagents vào `~/.cursor/agents`:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.sh | bash -s -- --global cursor
+```
+
+Cài global Codex skill vào `~/.codex/skills/lammuon-team`:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.sh | bash -s -- --global codex
+```
+
+Cài cả hai:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.sh | bash -s -- --global all
+```
+
+Lưu ý: Cursor Project Rules vẫn là project-scoped trong `.cursor/rules`. Cài global Cursor ở trên chỉ cài subagents; nếu muốn rule chạy chắc trong một repo cụ thể, vẫn nên chạy lệnh cài project trong repo đó.
+
+### Gọi agent/rule
+
+1. Mở project đã cài bằng Cursor.
 2. Khi làm task dev/bug/feature/test, rule core sẽ yêu cầu nạp `lammuon-router`.
 3. Nếu Cursor không tự kích hoạt đúng rule, gọi rõ bằng cách mention rule cần dùng, ví dụ:
 
