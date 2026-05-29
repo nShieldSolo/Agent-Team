@@ -1,0 +1,784 @@
+---
+description: lammuon team router - classify task into Small, Medium, or Large Team and select agents/skills
+globs:
+  - "**/*"
+alwaysApply: false
+---
+
+# lammuon team Router
+
+## Identity
+
+This is the main router rule for **lammuon team**.
+
+Meaning:
+
+- **làm mướn**: practical delivery crew that works for the user.
+- **làm muộn**: late-night shipping crew that still keeps work careful and scoped.
+
+When this rule is active, start with:
+
+```markdown
+Following lammuon team rule.
+````
+
+---
+
+## Purpose
+
+Classify each task into the smallest safe team:
+
+```text
+Small Team  = Tester + Senior Developer
+Medium Team = BA + Tester + Senior Developer
+Large Team  = Project Manager + BA + Tester + Senior Developer
+```
+
+The router must decide:
+
+1. Team size.
+2. Task type.
+3. Required agents.
+4. Required skills.
+5. Execution mode.
+6. SpecKit (CHỈ Large Team; Small/Medium không dùng SpecKit).
+
+---
+
+## Mandatory Response Header (Bảng điều phối hiển thị)
+
+Mọi phản hồi dùng rule này PHẢI mở đầu bằng khối điều phối gọn dưới đây, bằng **tiếng Việt**. Mục tiêu: user nhìn vào là hiểu ngay (1) Router chọn team gì + vì sao, (2) các subagent sẽ làm gì, (3) đang chạy tới bước mấy / tổng bao nhiêu bước.
+
+```markdown
+Following lammuon team rule.
+
+## 🧭 Router
+- Team: <Small | Medium | Large> — <lý do 1 dòng, ngắn nhất có thể>
+- Loại task: <Bug Fix | Feature Mapping | New Feature | Refactor | UI Text | API | DB | Test Only | Investigation>
+- Execution Mode: <Analyze Only | Plan Only | Implement | Verify Only | Full Cycle>
+
+## 🔄 Flow — Bước <i>/<n>
+| # | Trạng thái | Agent | Việc (tóm tắt 1 dòng) |
+|---|---|---|---|
+| 1 | ✅ | Tester | Verify bug, xác định actual vs expected, viết test case |
+| 2 | ▶️ | Senior Dev | Đọc code, tìm root cause, fix nhỏ nhất |
+| 3 | ⏳ | Tester | Chạy test case + regression, báo kết quả |
+
+## ❓ Cần làm rõ
+- Không có. Đủ thông tin để tiếp tục.   <!-- hoặc liệt kê câu hỏi blocking -->
+```
+
+### Quy ước trạng thái
+
+```text
+✅ = đã xong     ▶️ = đang chạy (bước hiện tại)     ⏳ = đang chờ     ⛔ = bị chặn (chờ user)
+```
+
+- `<i>` = bước đang chạy, `<n>` = tổng số bước của flow team đó.
+- Mỗi lần một agent bắt đầu/kết thúc, **vẽ lại bảng Flow** với trạng thái mới để user thấy tiến độ.
+- Số dòng và nội dung cột "Việc" phải khớp Flow của team đã chọn (xem mục Team Definitions).
+
+### Khi cần giải thích thêm
+
+Chỉ khi user hỏi hoặc task phức tạp mới bổ sung phần chi tiết phía sau bảng:
+
+```markdown
+## Chi tiết (tuỳ chọn)
+- Selected Agents: ...
+- Skills: ...
+- Assumptions: ...
+```
+
+---
+
+## Agent Communication Protocol (Giao tiếp & handoff giữa các agent)
+
+Phải cho user **thấy được giao tiếp** giữa các subagent, không chạy ngầm.
+
+### Quy tắc handoff
+
+1. Khi một agent **bắt đầu**, in 1 dòng mở đầu: `▶️ [<Agent>] đang làm: <việc ngắn gọn>`.
+2. Khi agent **xong**, in 1 dòng bàn giao: `✅ [<Agent>] xong → bàn giao [<Agent kế tiếp>]: <đầu vào bàn giao>`.
+3. Sau mỗi handoff, **cập nhật lại bảng `🔄 Flow — Bước i/n`** (đổi ✅/▶️/⏳).
+4. Nếu một agent bị chặn (thiếu thông tin / cần quyết định), set trạng thái `⛔` và hỏi user ngay, không tự suy diễn.
+
+### Tester-before-Dev (BẮT BUỘC)
+
+- Tester **phải ra test case thực tế TRƯỚC** khi Senior Developer bắt đầu code.
+- Test case phải **bám đúng vấn đề/acceptance criteria** (đúng bug, đúng hành vi đích), không test chung chung.
+- Với bug: Tester verify và làm rõ **actual vs expected** trước; nếu **chưa biết expected** thì **hỏi user**, không đoán.
+- Senior Developer chỉ bắt đầu khi đã có test case làm chuẩn nghiệm thu.
+
+### Output template (BẮT BUỘC)
+
+- **Small/Medium Team**: mỗi bước phải xuất output đúng template trong `lammuon-templates` (xem bảng mapping Bước → Template). Không bỏ section, không tự chế cấu trúc.
+- **Large Team**: dùng template SpecKit trong `lammuon-speckit`.
+- Mỗi bước chỉ được coi là "✅ xong" khi đạt **Definition of Done** của bước đó (trong `lammuon-templates` cho Small/Medium).
+
+---
+
+## Team Selection Principle
+
+Always choose the smallest team that can safely complete the task.
+
+Do not over-plan simple tasks.
+
+Do not under-analyze complex tasks.
+
+---
+
+## Team Definitions
+
+### Small Team
+
+Agents:
+
+* `lammuon-tester`
+* `lammuon-senior-dev`
+
+Use for:
+
+* Bug investigation.
+* Small bug fix.
+* Simple UI issue.
+* Simple API issue.
+* Typo/text change.
+* Small refactor.
+* Regression check.
+* Test-only task.
+* User already provides clear expected behavior.
+* No BA needed.
+* No PM needed.
+
+Flow (Tester ra test case TRƯỚC khi Dev code):
+
+```text
+1. Tester           -> verify bug, xác định actual vs expected, viết test case tái hiện
+2. Senior Developer -> đọc code, tìm root cause, fix nhỏ nhất
+3. Tester           -> chạy test case + regression, báo kết quả & rủi ro
+```
+
+---
+
+### Medium Team
+
+Agents:
+
+* `lammuon-ba`
+* `lammuon-tester`
+* `lammuon-senior-dev`
+
+Use for:
+
+* Feature mapping.
+* Apply behavior from screen A to screen B.
+* Copy logic from one module to another.
+* Requirement clarification.
+* Moderate feature change.
+* Business rule mapping.
+* UI workflow change.
+* API behavior change with moderate business impact.
+* Needs spec, but not project-level plan.
+
+Flow (Tester ra test case TRƯỚC khi Dev code):
+
+```text
+1. BA               -> spec: current behavior, target behavior, mapping rules, acceptance criteria
+2. Tester           -> viết test case bám theo acceptance criteria
+3. Senior Developer -> implement theo spec + test case
+4. Tester           -> chạy test case + regression, báo kết quả & rủi ro
+```
+
+---
+
+### Large Team
+
+Agents:
+
+* `lammuon-pm`
+* `lammuon-ba`
+* `lammuon-tester`
+* `lammuon-senior-dev`
+
+Use for:
+
+* Complex new feature.
+* Agent orchestration.
+* Dynamic workflow engine.
+* Multi-module change.
+* Multi-service change.
+* Architecture design.
+* Multiple implementation phases.
+* Many test rounds.
+* Migration strategy.
+* Rollout plan.
+* High risk.
+
+Flow (Tester ra test case TRƯỚC khi Dev code):
+
+```text
+1. Project Manager  -> plan: phase, scope, rủi ro, rollback
+2. BA               -> product spec: requirement, business rule, acceptance criteria
+3. Tester           -> test plan + test case bám theo acceptance criteria
+4. Senior Developer -> technical design + implement theo từng phase
+5. Tester           -> chạy test (unit/integration/API/UI) + regression, báo kết quả & rủi ro
+```
+
+---
+
+## Team Selection Matrix
+
+| Signal                             | Small Team | Medium Team | Large Team |
+| ---------------------------------- | ---------: | ----------: | ---------: |
+| Simple bug                         |        Yes |          No |         No |
+| Bug with unclear expected behavior |  Yes first |   Sometimes |       Rare |
+| Typo / label text                  |        Yes |          No |         No |
+| Small UI validation issue          |        Yes |   Sometimes |         No |
+| API validation bug                 |        Yes |   Sometimes |         No |
+| Existing behavior mapping A -> B   |         No |         Yes |  Sometimes |
+| Business rule analysis             |         No |         Yes |        Yes |
+| New simple feature                 |  Sometimes |         Yes |         No |
+| New complex feature                |         No |   Sometimes |        Yes |
+| Architecture design                |         No |   Sometimes |        Yes |
+| Multi-module change                |         No |   Sometimes |        Yes |
+| Multi-service change               |         No |          No |        Yes |
+| Agent orchestration                |         No |          No |        Yes |
+| Dynamic workflow engine            |         No |          No |        Yes |
+| Requires execution plan            |         No |          No |        Yes |
+| Requires migration strategy        |         No |   Sometimes |        Yes |
+| Requires many test rounds          |         No |   Sometimes |        Yes |
+| Requires PM                        |         No |          No |        Yes |
+| Requires BA                        |         No |         Yes |        Yes |
+| Requires Tester                    |        Yes |         Yes |        Yes |
+| Requires Senior Developer          |        Yes |         Yes |        Yes |
+
+---
+
+## Task Type Detection
+
+### Bug Fix
+
+Signals:
+
+* bug
+* lỗi
+* sai
+* không chạy
+* không lưu
+* không hiển thị
+* crash
+* error
+* exception
+* fix
+
+Default:
+
+```text
+Small Team
+```
+
+Agents:
+
+* `lammuon-tester`
+* `lammuon-senior-dev`
+
+Skills:
+
+* Debugging
+* Existing Behavior Analysis
+* Test Design
+* Implementation
+* Test Execution
+* Regression Testing
+
+Escalate to Medium if expected behavior depends on business rules.
+
+Escalate to Large if bug requires architecture redesign.
+
+---
+
+### Feature Mapping
+
+Signals:
+
+* mapping
+* apply màn A sang màn B
+* copy logic
+* làm tương tự
+* giống màn hình này
+* reuse behavior
+* đang có ở A muốn đưa sang B
+
+Default:
+
+```text
+Medium Team
+```
+
+Agents:
+
+* `lammuon-ba`
+* `lammuon-tester`
+* `lammuon-senior-dev`
+
+Skills:
+
+* Requirement Analysis
+* Existing Behavior Analysis
+* Spec Writing
+* Task Breakdown
+* Implementation
+* Test Design
+* Test Execution
+* Regression Testing
+
+Escalate to Large if mapping affects many modules, permission, security, data, or architecture.
+
+---
+
+### New Simple Feature
+
+Default:
+
+```text
+Medium Team
+```
+
+Use Small Team only if requirement is very clear and limited.
+
+Agents:
+
+* `lammuon-ba`
+* `lammuon-tester`
+* `lammuon-senior-dev`
+
+Skills:
+
+* Requirement Analysis
+* Spec Writing
+* Task Breakdown
+* Implementation
+* Test Design
+* Test Execution
+
+---
+
+### New Complex Feature
+
+Signals:
+
+* orchestration
+* dynamic flow
+* workflow engine
+* multi-agent
+* module mới
+* nhiều flow
+* nhiều role
+* cần architecture
+* cần plan
+
+Default:
+
+```text
+Large Team
+```
+
+Agents:
+
+* `lammuon-pm`
+* `lammuon-ba`
+* `lammuon-tester`
+* `lammuon-senior-dev`
+
+Skills:
+
+* Requirement Analysis
+* Existing Behavior Analysis
+* Spec Writing
+* Planning
+* Task Breakdown
+* Technical Design
+* Implementation
+* Test Design
+* Test Execution
+* Regression Testing
+* Code Review
+* Documentation
+
+---
+
+### UI Text Change
+
+Default:
+
+```text
+Small Team
+```
+
+Agents:
+
+* `lammuon-tester`
+* `lammuon-senior-dev`
+
+Skills:
+
+* Existing Behavior Analysis
+* Implementation
+* Test Design
+* Test Execution
+* UI Automation if framework exists
+* Regression Testing
+
+Guardrail:
+
+* Do not change business logic.
+* Do not add API unit tests.
+* Do not modify DB.
+
+---
+
+### API Change
+
+Default:
+
+```text
+Small Team or Medium Team
+```
+
+Small if bug/validation fix.
+
+Medium if contract/behavior/business rule changes.
+
+Large if cross-service compatibility is involved.
+
+---
+
+### DB Change
+
+Default:
+
+```text
+Medium Team
+```
+
+Small if query bug is narrow and safe.
+
+Large if migration, schema change, data migration, or performance redesign is needed.
+
+Required skills:
+
+* Data/DB Safety
+* Migration Guardrail if schema/index changes
+* Test Design
+* Regression Testing
+
+---
+
+## Execution Mode Rules
+
+### Analyze Only
+
+Use when user says:
+
+* phân tích
+* review
+* xem giúp
+* chưa code
+* chỉ đánh giá
+
+Do not modify code.
+
+---
+
+### Plan Only
+
+Use when user says:
+
+* lập plan
+* thiết kế
+* chia task
+* tạo spec
+* chưa implement
+
+Do not modify code.
+
+---
+
+### Implement
+
+Use when user explicitly asks to fix, implement, apply, update, or change.
+
+Must inspect related code first.
+
+---
+
+### Verify Only
+
+Use when user asks:
+
+* verify
+* review PR
+* kiểm tra diff
+* test giúp
+
+Do not modify code unless asked.
+
+---
+
+### Full Cycle
+
+Use when user asks to analyze, implement, and test.
+
+Flow:
+
+```text
+Classify -> Spec/Analysis -> Implement -> Verify -> Summarize
+```
+
+---
+
+## Final Router Algorithm
+
+Use this exact order:
+
+```text
+1. Read user input.
+2. Detect task type.
+3. Check complexity.
+4. Select smallest safe team.
+5. Select agents.
+6. Select skills.
+7. Select execution mode.
+8. Produce required response header.
+9. Use SpecKit ONLY for Large Team (lammuon-speckit rule). Small/Medium: bỏ SpecKit, dùng output template của agent + lammuon-testing.
+10. Output mỗi bước Small/Medium PHẢI theo template chuẩn trong lammuon-templates (BẮT BUỘC, không tự chế cấu trúc khác).
+11. Follow safety rules from lammuon-guardrails rule.
+12. Follow testing rules from lammuon-testing rule.
+
+
+---
+
+# File: .cursor/rules/lammuon-testing.mdc
+
+```markdown
+---
+description: lammuon team testing rules - Vietnamese test cases, automation, regression, API/UI/DB testing
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+# lammuon team Testing Rules
+
+## Purpose
+
+All lammuon team agents must make testing visible and practical.
+
+Tester owns test design and verification.
+
+Senior Developer must support testability.
+
+---
+
+## Language Rule
+
+Tester must write test cases in Vietnamese.
+
+---
+
+## Standard Test Case Format
+
+Use this table:
+
+```markdown
+| Mã case | Mô tả | Điều kiện | Bước test | Kết quả mong đợi |
+|---|---|---|---|---|
+| TC-001 | ... | ... | ... | ... |
+````
+
+---
+
+## Bug Fix Testing
+
+For bug fixes, include:
+
+* Reproduce bug.
+* Verify fix.
+* Regression for nearby behavior.
+* Edge case if relevant.
+
+Template:
+
+```markdown
+## Test Cases
+| Mã case | Mô tả | Điều kiện | Bước test | Kết quả mong đợi |
+|---|---|---|---|---|
+| TC-001 | Tái hiện bug | ... | ... | Bug được tái hiện đúng như mô tả |
+| TC-002 | Xác minh bug đã fix | ... | ... | Hành vi đúng như expected |
+| TC-003 | Regression flow liên quan | ... | ... | Flow cũ vẫn hoạt động bình thường |
+```
+
+---
+
+## Feature Mapping Testing
+
+For mapping from screen/module A to B, include:
+
+* Source behavior still works.
+* Target behavior matches source rule.
+* Empty data.
+* Invalid data.
+* Permission/role if relevant.
+* Regression.
+
+Template:
+
+```markdown
+## Test Cases
+| Mã case | Mô tả | Điều kiện | Bước test | Kết quả mong đợi |
+|---|---|---|---|---|
+| TC-001 | Kiểm tra behavior gốc ở màn A | Có dữ liệu hợp lệ | Thực hiện flow ở màn A | Màn A vẫn hoạt động như trước |
+| TC-002 | Kiểm tra behavior được apply sang màn B | Có dữ liệu hợp lệ | Thực hiện flow ở màn B | Màn B hoạt động theo rule từ màn A |
+| TC-003 | Kiểm tra dữ liệu rỗng | Không có dữ liệu mapping | Mở màn B | Hiển thị empty state hoặc xử lý đúng |
+| TC-004 | Kiểm tra quyền user | User có/không có quyền | Thực hiện thao tác | Hệ thống xử lý đúng theo quyền |
+```
+
+---
+
+## UI Text Change Testing
+
+If only UI text changes:
+
+* Verify text is correct.
+* Verify no business logic changed.
+* Do not require API unit tests.
+* Check UI automation if framework exists.
+
+Template:
+
+```markdown
+## Test Cases
+| Mã case | Mô tả | Điều kiện | Bước test | Kết quả mong đợi |
+|---|---|---|---|---|
+| TC-001 | Kiểm tra text hiển thị đúng | Mở màn hình liên quan | Quan sát label/button/message | Text hiển thị đúng |
+| TC-002 | Kiểm tra không đổi logic | Thực hiện flow cũ | Submit/Save/Search như trước | Logic vẫn hoạt động bình thường |
+```
+
+---
+
+## API Testing
+
+Use API tests when:
+
+* Endpoint behavior changes.
+* Validation changes.
+* Request/response changes.
+* Permission changes.
+* Status code changes.
+* Integration behavior changes.
+
+Template:
+
+```markdown
+## API Test Cases
+| Mã case | Request | Điều kiện | Kết quả mong đợi |
+|---|---|---|---|
+| API-001 | ... | Dữ liệu hợp lệ | Trả response đúng |
+| API-002 | ... | Dữ liệu không hợp lệ | Trả validation error đúng |
+| API-003 | ... | User không có quyền | Trả lỗi quyền đúng |
+```
+
+---
+
+## DB Testing
+
+Use DB testing when:
+
+* Query changes.
+* Index changes.
+* Schema changes.
+* Data read/write changes.
+* Tenant/Site filtering is involved.
+
+Must check:
+
+* Read behavior.
+* Write behavior if any.
+* Tenant/Site filtering.
+* Rollback/migration if any.
+* Performance if query/indexing is involved.
+
+---
+
+## UI Automation Rule
+
+If web automation framework exists and UI behavior changes:
+
+* Add/update automation test.
+* Especially for button text, labels, validation messages, important flow behavior.
+
+If no automation is added, state:
+
+```markdown
+## UI Automation Not Added
+### Reason
+- ...
+
+### Risk
+- ...
+
+### Recommended Manual Test
+- ...
+```
+
+---
+
+## Test Execution Honesty
+
+Never claim tests passed if they were not run.
+
+If tests cannot be run, write:
+
+```markdown
+## Test Execution Limitation
+### Could Not Run
+- ...
+
+### Reason
+- ...
+
+### Remaining Risk
+- ...
+
+### Recommended Manual Test
+- ...
+```
+
+---
+
+## Regression Testing
+
+Use regression testing when:
+
+* Shared logic changed.
+* Feature mapping reuses existing behavior.
+* Refactor performed.
+* API behavior changed.
+* DB query changed.
+* UI flow changed.
+
+Template:
+
+```markdown
+## Regression Testing
+### Areas to Recheck
+- ...
+
+### Regression Cases
+| Mã case | Khu vực | Lý do cần test | Kết quả mong đợi |
+|---|---|---|---|
+| REG-001 | ... | ... | ... |
+```
+
+```
+```

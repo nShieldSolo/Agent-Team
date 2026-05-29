@@ -1,0 +1,248 @@
+---
+description: >-
+  lammuon team output templates - template markdown CHUẨN và BẮT BUỘC cho mỗi bước
+  của Small Team và Medium Team (Large Team dùng lammuon-speckit). Áp dụng khi một
+  subagent (BA, Tester, Senior Developer) sắp xuất output markdown cho user.
+globs:
+  - "**/*"
+alwaysApply: false
+---
+
+# lammuon team Output Templates
+
+## Phạm vi áp dụng
+
+```text
+Small Team   -> BẮT BUỘC theo template trong rule này
+Medium Team  -> BẮT BUỘC theo template trong rule này
+Large Team   -> KHÔNG dùng rule này. Dùng lammuon-speckit (template SpecKit đầy đủ)
+```
+
+Đây là **single source of truth** cho output của Small/Medium Team. Mỗi bước trong Flow phải xuất đúng template tương ứng. Không tự chế cấu trúc khác.
+
+---
+
+## Quy tắc bắt buộc (Mandatory)
+
+1. Mỗi bước của Small/Medium Team **phải** mở đầu output bằng đúng heading template ở bảng mapping bên dưới.
+2. **Không bỏ section** trong template. Section không áp dụng → ghi rõ `Không áp dụng` (không để trống, không xoá heading).
+3. Test case **viết bằng tiếng Việt** (theo `lammuon-testing`).
+4. Mỗi bước kết thúc phải pass **Definition of Done (DoD)** của bước đó (mục cuối rule này).
+5. Nếu thiếu thông tin để điền một section bắt buộc → set `⛔` và hỏi user, không bịa.
+6. Template ở đây là **chuẩn tối thiểu**. Được thêm dòng/cột, **không được bớt** section bắt buộc.
+
+---
+
+## Bảng mapping Bước → Template
+
+### Small Team
+
+| # | Agent | Bước | Template bắt buộc |
+|---|---|---|---|
+| 1 | Tester | Verify + test case | `## Tester Analysis` (Bug Investigation) |
+| 2 | Senior Dev | Fix nhỏ nhất | `## Senior Developer Notes` |
+| 3 | Tester | Chạy test + regression | `## Test Execution` + `## Regression Testing` |
+
+### Medium Team
+
+| # | Agent | Bước | Template bắt buộc |
+|---|---|---|---|
+| 1 | BA | Spec nhẹ | `## BA Spec` |
+| 2 | Tester | Test case theo AC | `## Test Cases` |
+| 3 | Senior Dev | Implement theo spec | `## Senior Developer Notes` |
+| 4 | Tester | Chạy test + regression | `## Test Execution` + `## Regression Testing` |
+
+---
+
+## Template + Mẫu điền sẵn
+
+> Phần "Mẫu" là ví dụ minh hoạ chuẩn chất lượng. Khi làm thật, thay nội dung nhưng **giữ nguyên cấu trúc heading**.
+
+### T1. Tester — Bug Investigation (`## Tester Analysis`)
+
+Skeleton chuẩn: xem `lammuon-tester` (mục Bug Investigation Template).
+
+Mẫu điền sẵn:
+
+```markdown
+## Tester Analysis
+
+### Reported Behavior (Hành vi được báo)
+- Bấm "Lưu" ở form khảo sát không lưu được, không có thông báo.
+
+### Actual Behavior (Hành vi thực tế)
+- Click "Lưu" → request 400, form đứng yên, không toast lỗi.
+
+### Expected Behavior (Hành vi mong đợi)
+- Lưu thành công và hiện toast "Đã lưu"; nếu lỗi phải hiện message rõ ràng.
+
+### Reproduction Steps (Bước tái hiện)
+1. Mở màn Khảo sát A.
+2. Nhập đủ field bắt buộc.
+3. Bấm "Lưu".
+4. Quan sát: không lưu, không báo lỗi.
+
+### Impacted Area (Khu vực ảnh hưởng)
+- Form khảo sát A, API POST /surveys, component SurveyForm.
+
+### Regression Risk (Rủi ro hồi quy)
+- Validation chung dùng lại ở màn B → cần kiểm tra lại màn B.
+
+### Test Cases
+| Mã case | Mô tả | Điều kiện | Bước test | Kết quả mong đợi |
+|---|---|---|---|---|
+| TC-001 | Tái hiện bug lưu thất bại | Field hợp lệ | Nhập đủ → bấm Lưu | Tái hiện đúng: không lưu, không báo |
+| TC-002 | Xác minh fix | Field hợp lệ | Nhập đủ → bấm Lưu | Lưu thành công, toast "Đã lưu" |
+| TC-003 | Hiện lỗi rõ ràng | Field thiếu | Bỏ trống field bắt buộc → Lưu | Hiện message lỗi đúng field |
+```
+
+### T2. Senior Dev — Implementation (`## Senior Developer Notes`)
+
+Skeleton chuẩn: xem `lammuon-senior-dev` (Output Template).
+
+Mẫu điền sẵn (rút gọn):
+
+```markdown
+## Senior Developer Notes
+
+### Related Files / Areas
+- src/features/survey/SurveyForm.tsx, src/api/survey.ts
+
+### Current Implementation
+- onSubmit gọi saveSurvey() nhưng không await, lỗi bị nuốt trong catch rỗng.
+
+### Root Cause / Technical Reason
+- Catch block rỗng nuốt lỗi 400; payload thiếu field `siteId`.
+
+### Implementation Approach
+- Thêm siteId vào payload; surface lỗi qua toast; giữ nguyên validation hiện có.
+
+### Files Changed
+- SurveyForm.tsx (onSubmit), survey.ts (payload type)
+
+### Why this approach
+- Thay đổi nhỏ nhất, không đụng validation chung, giữ kiến trúc.
+
+### Out of Scope
+- Không refactor SurveyForm; không đổi API contract.
+
+### Risk
+- Thấp. Chỉ ảnh hưởng luồng lưu khảo sát A.
+
+### Verification Support
+- Đã thêm log lỗi; Tester chạy TC-001..003.
+```
+
+### T3. BA — Spec nhẹ Medium Team (`## BA Spec`)
+
+Skeleton chuẩn: xem `lammuon-ba` (Output Template — Medium Team).
+
+Mẫu điền sẵn (rút gọn):
+
+```markdown
+## BA Spec
+
+### User Intent
+- Apply hành vi mapping theo user của màn A sang màn B.
+
+### Goal
+- Màn B hiển thị/áp dụng đúng rule mapping như màn A.
+
+### Current Behavior
+- Màn A: mỗi user thấy bộ câu hỏi theo mapping riêng.
+
+### Target Behavior
+- Màn B: dùng đúng rule mapping đó cho cùng user.
+
+### Mapping Rules
+| Source Area | Target Area | Rule | Notes |
+|---|---|---|---|
+| Màn A - câu hỏi theo user | Màn B - danh sách | Lấy mapping theo userId | Giữ thứ tự |
+
+### Business Rules
+- BR-001: User không có mapping → màn B hiển thị empty state.
+
+### In Scope
+- Áp mapping A → B.
+
+### Out of Scope
+- Không đổi cách tạo mapping ở màn A.
+
+### Assumptions
+- Mapping lưu cùng nguồn dữ liệu cho cả A và B.
+
+### Open Questions
+- Không áp dụng.
+
+### Acceptance Criteria
+- AC-001: User có mapping → màn B hiển thị đúng như màn A.
+- AC-002: User không mapping → màn B hiện empty state.
+```
+
+### T4. Tester — Test Cases theo AC (`## Test Cases`)
+
+```markdown
+## Test Cases
+| Mã case | Mô tả | Điều kiện | Bước test | Kết quả mong đợi |
+|---|---|---|---|---|
+| TC-001 | Behavior gốc màn A vẫn đúng | Có mapping | Thực hiện flow màn A | Màn A giữ nguyên hành vi |
+| TC-002 | Mapping áp sang màn B | Có mapping | Mở màn B | Màn B đúng rule từ màn A |
+| TC-003 | Dữ liệu rỗng | Không mapping | Mở màn B | Hiện empty state |
+| TC-004 | Phân quyền | User không quyền | Thao tác màn B | Xử lý đúng theo quyền |
+```
+
+### T5. Tester — Test Execution + Regression (`## Test Execution`)
+
+Skeleton chuẩn: xem `lammuon-tester` (Test Execution Template) và `lammuon-testing` (Regression Testing).
+
+Mẫu điền sẵn:
+
+```markdown
+## Test Execution
+
+### Tests Run
+- TC-001, TC-002, TC-003
+
+### Result
+- Passed: TC-001, TC-002, TC-003
+- Failed: (không)
+- Not Run: (không)
+
+### Evidence
+- Lưu khảo sát A trả 200, toast "Đã lưu" hiển thị.
+
+### Remaining Risk
+- Thấp. Đề nghị kiểm tra nhanh màn B do dùng chung validation.
+
+## Regression Testing
+### Areas to Recheck
+- Màn B (validation dùng chung)
+
+### Regression Cases
+| Mã case | Khu vực | Lý do cần test | Kết quả mong đợi |
+|---|---|---|---|
+| REG-001 | Màn B lưu dữ liệu | Dùng chung validation với A | Màn B vẫn lưu bình thường |
+```
+
+> Nếu **không chạy được test**, dùng template `## Test Execution Limitation` trong `lammuon-tester` thay cho phần Result — và nói rõ rủi ro còn lại. Không được khai test pass khi chưa chạy.
+
+---
+
+## Definition of Done (DoD) theo bước
+
+| Bước | DoD bắt buộc |
+|---|---|
+| Tester verify (Small) | Có actual vs expected rõ ràng; có ≥3 test case (tái hiện, xác minh fix, regression) |
+| Senior Dev (Small/Medium) | Có root cause + danh sách file đổi + scope/out-of-scope + risk |
+| BA (Medium) | Có acceptance criteria (AC-xxx) đo được + mapping rules + scope rõ |
+| Tester test case (Medium) | Test case bám từng AC; có case dữ liệu rỗng + phân quyền nếu liên quan |
+| Tester execution (mọi team) | Có Result (Passed/Failed/Not Run) trung thực + regression + remaining risk |
+
+---
+
+## Liên kết rule khác
+
+- Test case format & loại test: `lammuon-testing`.
+- An toàn (git/DB/file/scope): `lammuon-guardrails`.
+- Large Team output: `lammuon-speckit` (KHÔNG dùng rule này).
+- Điều phối & chọn team: `lammuon-router`.

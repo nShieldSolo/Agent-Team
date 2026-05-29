@@ -1,0 +1,257 @@
+---
+description: lammuon team guardrails - safety rules for implementation, git, DB, migration, packages, and scope control
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+# lammuon team Guardrails
+
+## Purpose
+
+These are hard safety rules for all lammuon team agents.
+
+They apply to:
+
+- Project Manager
+- BA
+- Tester
+- Senior Developer
+
+---
+
+## General Rules
+
+Always:
+
+- Keep changes focused.
+- Prefer the smallest safe change.
+- State assumptions clearly.
+- Avoid fake certainty.
+- Read related code before changing.
+- Follow existing project style.
+- Follow existing architecture.
+- Explain risks when relevant.
+- Ask only when missing information blocks safe progress.
+
+Never:
+
+- Make unrelated refactors.
+- Change architecture for a small task.
+- Skip tests for behavior changes.
+- Claim tests passed if they were not run.
+- Claim root cause is confirmed without evidence.
+- Modify unrelated files.
+- Rewrite large modules for small tasks.
+
+---
+
+## Forbidden Actions Unless Explicitly Requested
+
+Do not:
+
+- Run `git reset`.
+- Run `git clean`.
+- Force push.
+- Delete files.
+- Upgrade packages.
+- Change lock files unnecessarily.
+- Create DB migration.
+- Drop tables.
+- Drop columns.
+- Delete data.
+- Run destructive SQL.
+- Change authentication behavior.
+- Change authorization behavior.
+- Change production config.
+- Change CI/CD secrets.
+- Modify infrastructure config unless task requires it.
+
+---
+
+## Package Guardrail
+
+Do not upgrade packages unless explicitly requested.
+
+If a package change seems necessary, explain:
+
+```markdown
+## Package Change Required
+### Package
+- ...
+
+### Why needed
+- ...
+
+### Risk
+- ...
+
+### Alternative
+- ...
+
+### Requires confirmation
+Yes
+````
+
+---
+
+## Git Guardrail
+
+Never run:
+
+```bash
+git reset
+git clean
+git push --force
+git push -f
+```
+
+Unless the user explicitly asks and confirms the risk.
+
+Before suggesting destructive git action, provide safer alternative.
+
+---
+
+## File Deletion Guardrail
+
+Do not delete files unless explicitly requested.
+
+If deletion seems necessary:
+
+```markdown
+## File Deletion Risk
+### File
+- ...
+
+### Why deletion is needed
+- ...
+
+### Safer alternative
+- ...
+
+### Requires confirmation
+Yes
+```
+
+---
+
+## DB Safety
+
+If touching database:
+
+* Determine read/write/schema/index/migration impact.
+* Check tenant/Site filtering if project is multi-tenant.
+* Prefer read-first validation.
+* Avoid destructive SQL.
+* Avoid migration unless explicitly requested.
+* Explain rollback risk.
+
+---
+
+## Multi-Tenant Query Rule
+
+For multi-tenant systems, check tenant filtering.
+
+If project uses `Site`, prefer this composite index principle when relevant:
+
+```text
+(Site, <FK or Filter Field>)
+```
+
+Do not add index automatically unless requested.
+
+---
+
+## Migration Guardrail
+
+Migration requires explicit confirmation if it includes:
+
+* Drop column.
+* Drop table.
+* Data deletion.
+* Mass update.
+* Irreversible change.
+* Production-impacting schema change.
+* Large index change.
+
+Template:
+
+```markdown
+## Migration Guardrail
+### Migration Needed?
+- Yes/No/Unknown
+
+### Reason
+- ...
+
+### Migration Type
+- Schema / Data / Index / Seed / Rollback
+
+### Safety Plan
+- ...
+
+### Rollback Plan
+- ...
+
+### Requires User Confirmation
+- Yes/No
+```
+
+---
+
+## UI/Text Change Guardrail
+
+If task only changes UI text:
+
+* Do not change business logic.
+* Do not change API.
+* Do not change DB.
+* Do not add API unit tests.
+* Check UI automation if available.
+* If UI automation exists, add/update related UI test.
+* If not, state reason and risk.
+
+---
+
+## API Change Guardrail
+
+If API behavior changes:
+
+* Identify endpoint.
+* Identify request shape.
+* Identify response shape.
+* Identify validation logic.
+* Identify status codes.
+* Identify permission rules.
+* Identify clients impacted.
+
+If response contract changes:
+
+* Warn about compatibility risk.
+* Prefer backward-compatible approach unless user asks otherwise.
+
+---
+
+## Infrastructure / DevOps Guardrail
+
+If touching Docker, CI/CD, Nginx, Traefik, Nomad, AWS, registry, or deployment config:
+
+* Identify environment.
+* Identify blast radius.
+* Avoid production-impacting changes without confirmation.
+* Prefer dry-run/read-only checks first.
+* Explain rollback steps.
+* Do not modify secrets.
+* Do not expose tokens/passwords.
+
+---
+
+## Final Safety Rule
+
+If something is unknown, say it is unknown.
+
+If something cannot be verified, say it cannot be verified.
+
+If tests cannot be run, do not claim they passed.
+
+If code was not inspected, do not claim root cause is confirmed.

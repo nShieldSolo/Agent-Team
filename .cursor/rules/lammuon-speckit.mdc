@@ -1,0 +1,274 @@
+---
+description: lammuon team SpecKit workflow - CHỈ áp dụng cho Large Team (spec, plan, tasks, implement, verify)
+globs:
+  - "**/*"
+alwaysApply: false
+---
+
+# lammuon team SpecKit Workflow
+
+## Phạm vi áp dụng
+
+SpecKit **CHỈ áp dụng cho Large Team**.
+
+```text
+Small Team   -> KHÔNG dùng SpecKit
+Medium Team  -> KHÔNG dùng SpecKit
+Large Team   -> Dùng SpecKit đầy đủ
+```
+
+Lý do: chỉ task phức tạp (tính năng mới lớn, agent orchestration, dynamic workflow, đa module/đa service, cần kiến trúc, nhiều phase, migration, nhiều vòng test) mới cần spec/plan/tasks dạng SpecKit. Task nhỏ/vừa nếu ép SpecKit sẽ thừa và làm chậm.
+
+Workflow SpecKit (Large Team):
+
+```text
+Spec -> Plan -> Tasks -> Analyze -> Implement -> Verify
+```
+
+---
+
+## Small Team & Medium Team — KHÔNG dùng SpecKit
+
+### Small Team
+
+Không tạo tài liệu SpecKit. Chỉ cần output gọn theo flow team:
+
+```text
+Tester (verify + test case) -> Senior Developer (fix) -> Tester (chạy test + regression)
+```
+
+Đầu ra bám theo output template trong từng agent (`lammuon-tester`, `lammuon-senior-dev`) và `lammuon-testing`. Không viết Spec/Plan/Tasks.
+
+### Medium Team
+
+Không tạo tài liệu SpecKit đầy đủ. BA viết spec nhẹ bằng **output template `BA Spec`** trong agent `lammuon-ba` (goal, current/target behavior, mapping rules, acceptance criteria), Tester ra test case, Senior Dev implement. Đầu ra bám theo output template của từng agent + `lammuon-testing`.
+
+```text
+BA (BA Spec nhẹ) -> Tester (test case) -> Senior Developer (implement) -> Tester (chạy test + regression)
+```
+
+Không viết Plan/Phase/Technical Design dạng SpecKit ở Medium Team.
+
+---
+
+## Large Team SpecKit Depth
+
+Dùng cho:
+
+* Tính năng mới phức tạp.
+* Agent orchestration.
+* Dynamic workflow.
+* Thay đổi đa module.
+* Công việc kiến trúc.
+* Thay đổi cross-service.
+* Migration strategy.
+* Triển khai nhiều phase.
+
+### Large Team Template
+
+````markdown
+Following lammuon team rule.
+
+## Team Classification
+Selected Team: Large Team
+
+## Selected Agents
+- lammuon-pm
+- lammuon-ba
+- lammuon-tester
+- lammuon-senior-dev
+
+## Skill Classification
+Selected Skills:
+- ...
+
+## Task Type
+Detected Type:
+- ...
+
+## Why this team
+- ...
+
+## Execution Mode
+Mode:
+- ...
+
+## Assumptions
+- ...
+
+## Clarifying Questions
+None. I can proceed with the available context.
+
+## Project Manager Plan
+### Delivery Goal
+- ...
+
+### Phases
+| Phase | Goal | Owner | Output | Dependency |
+|---|---|---|---|---|
+| Phase 1 | ... | ... | ... | ... |
+
+### Risks
+| Risk | Impact | Probability | Mitigation |
+|---|---|---:|---|
+
+### Scope Control
+#### In Scope
+- ...
+
+#### Out of Scope
+- ...
+
+### Rollback / Recovery
+- ...
+
+## BA Product Spec
+### Goal
+- ...
+
+### User Stories
+- As a ..., I want ..., so that ...
+
+### Functional Requirements
+- FR-001:
+- FR-002:
+
+### Non-Functional Requirements
+#### Performance
+- ...
+
+#### Security
+- ...
+
+#### Maintainability
+- ...
+
+#### Observability
+- ...
+
+### Business Rules
+- BR-001:
+- BR-002:
+
+### Acceptance Criteria
+- AC-001:
+- AC-002:
+
+### Open Questions
+- ...
+
+## Senior Developer Technical Design
+### Architecture Summary
+- ...
+
+### Components
+| Component | Responsibility | Notes |
+|---|---|---|
+
+### Data Flow
+```text
+...
+````
+
+### API / Service Changes
+
+| Area | Change | Compatibility Risk |
+| ---- | ------ | ------------------ |
+
+### Data / DB Impact
+
+* ...
+
+### Files Likely Affected
+
+* ...
+
+### Implementation Strategy
+
+* ...
+
+## Tasks
+
+| ID    | Owner            | Task | Dependency | Done When |
+| ----- | ---------------- | ---- | ---------- | --------- |
+| T-001 | PM               | ...  | None       | ...       |
+| T-002 | BA               | ...  | T-001      | ...       |
+| T-003 | Tester           | ...  | T-002      | ...       |
+| T-004 | Senior Developer | ...  | T-003      | ...       |
+
+## Tester Test Plan
+
+### Unit Tests
+
+* ...
+
+### Integration Tests
+
+* ...
+
+### API Tests
+
+* ...
+
+### UI / E2E Tests
+
+* ...
+
+### Regression Tests
+
+* ...
+
+### Vietnamese Test Cases
+
+| Mã case | Mô tả | Điều kiện | Bước test | Kết quả mong đợi |
+| ------- | ----- | --------- | --------- | ---------------- |
+
+## Verification
+
+### Tests Run
+
+* ...
+
+### Result
+
+* ...
+
+### Remaining Risk
+
+* ...
+
+## Release Note
+
+### Changed
+
+* ...
+
+### Fixed
+
+* ...
+
+### Risk
+
+* ...
+
+### Test
+
+* ...
+
+### Rollback
+
+* ...
+
+````
+
+---
+
+## SpecKit Depth Rule
+
+```text
+Small Team   -> KHÔNG SpecKit. Chỉ: phân tích nhẹ + test case + fix + verify.
+Medium Team  -> KHÔNG SpecKit. Chỉ: BA Spec nhẹ + test case + implementation notes + verify.
+Large Team   -> SpecKit đầy đủ: PM plan + BA spec + technical design + task breakdown + test plan.
+```
+
+Không ép template Large Team cho Small/Medium.
