@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_URL="${LAMMUON_AGENT_REPO:-https://github.com/nShieldSolo/Agent-Team}"
+REPO_URL="${LAMMUON_AGENT_REPO:-https://github.com/nShieldSolo/AgentTeam}"
 BRANCH="${LAMMUON_AGENT_BRANCH:-main}"
 MODE="project"
 TARGET_DIR="$PWD"
@@ -32,15 +32,15 @@ Examples:
   scripts/install.sh --global all
 
 From GitHub:
-  curl -fsSL https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.sh | bash
-  curl -fsSL https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.sh | bash -s -- /path/to/project
-  curl -fsSL https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.sh | bash -s -- --global cursor
-  curl -fsSL https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.sh | bash -s -- --global codex
-  curl -fsSL https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.sh | bash -s -- --global all
+  curl -fsSL https://raw.githubusercontent.com/nShieldSolo/AgentTeam/main/scripts/install.sh | bash
+  curl -fsSL https://raw.githubusercontent.com/nShieldSolo/AgentTeam/main/scripts/install.sh | bash -s -- /path/to/project
+  curl -fsSL https://raw.githubusercontent.com/nShieldSolo/AgentTeam/main/scripts/install.sh | bash -s -- --global cursor
+  curl -fsSL https://raw.githubusercontent.com/nShieldSolo/AgentTeam/main/scripts/install.sh | bash -s -- --global codex
+  curl -fsSL https://raw.githubusercontent.com/nShieldSolo/AgentTeam/main/scripts/install.sh | bash -s -- --global all
 
 Environment:
   LAMMUON_AGENT_BRANCH=main
-  LAMMUON_AGENT_REPO=https://github.com/nShieldSolo/Agent-Team
+  LAMMUON_AGENT_REPO=https://github.com/nShieldSolo/AgentTeam
   CODEX_HOME=$HOME/.codex
 EOF
 }

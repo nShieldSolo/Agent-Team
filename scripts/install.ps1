@@ -16,7 +16,7 @@ param(
 $ErrorActionPreference = "Stop"
 
 if (-not $RepoUrl) {
-  $RepoUrl = if ($env:LAMMUON_AGENT_REPO) { $env:LAMMUON_AGENT_REPO } else { "https://github.com/nShieldSolo/Agent-Team" }
+  $RepoUrl = if ($env:LAMMUON_AGENT_REPO) { $env:LAMMUON_AGENT_REPO } else { "https://github.com/nShieldSolo/AgentTeam" }
 }
 
 if (-not $Branch) {
