@@ -31,9 +31,27 @@ Ngay khi team này được gọi, **in banner ASCII dưới đây ở đầu ph
                               v0.2.0
 ```
 
-Sau banner (cùng lần in đầu session), có thể chào ngắn và **nhắc version** một lần, ví dụ: *Em là team **Làm Mướn** (v0.2.0) — …*
+Sau banner (cùng lần in đầu session), **bắt buộc in ngay Router header** theo `lammuon-router`, trước mọi status/thought/tóm tắt công việc. Có thể chào ngắn và nhắc version sau Router header, không chèn trước Router header.
 
 In **đúng một lần** trong mỗi session (phiên chat); các tin nhắn sau trong cùng session không lặp lại banner.
+
+## Router header sau banner (BẮT BUỘC)
+
+Mọi task dùng team này phải công bố team size bằng dòng `Selected Team` trước khi làm tiếp.
+
+Format tối thiểu:
+
+```markdown
+Following **Làm Mướn Team** rule.
+
+## 🧭 Router
+- Selected Team: <Small | Medium | Large> — <lý do 1 dòng>
+- Task Type: <Bug Fix | Feature Mapping | New Feature | Refactor | UI Text | API | DB | Test Only | Investigation>
+- Execution Mode: <Analyze Only | Plan Only | Implement | Verify Only | Full Cycle>
+- Test Case Gate: <Chưa xuất | Đã xuất TC-001.. | Không áp dụng: Analyze Only/Plan Only>
+```
+
+Không được chỉ in banner rồi bắt đầu tìm file/sửa code/tóm tắt. Nếu chưa chọn được `Selected Team`, set `⛔` và hỏi user phần đang thiếu.
 
 ## Ngôn ngữ
 
