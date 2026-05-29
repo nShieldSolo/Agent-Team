@@ -106,13 +106,13 @@ PM -> BA -> Tester -> Senior Developer -> Tester
 Cài vào project hiện tại:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/nShieldSolo/AgentTeam/main/scripts/install.sh | bash
 ```
 
 Cài vào project khác bằng path:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.sh | bash -s -- /path/to/project
+curl -fsSL https://raw.githubusercontent.com/nShieldSolo/AgentTeam/main/scripts/install.sh | bash -s -- /path/to/project
 ```
 
 Script chỉ copy các file `lammuon-*` vào `.cursor/agents` và `.cursor/rules`. Nếu có file cũ trùng tên và khác nội dung, script sẽ backup file cũ thành `*.bak.<timestamp>` trước khi ghi đè.
@@ -122,13 +122,13 @@ Script chỉ copy các file `lammuon-*` vào `.cursor/agents` và `.cursor/rules
 Chạy trong PowerShell tại project muốn cài:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.ps1 | iex"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/nShieldSolo/AgentTeam/main/scripts/install.ps1 | iex"
 ```
 
 Cài vào project khác bằng path:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.ps1'))) -ProjectPath 'C:\path\to\project'"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/nShieldSolo/AgentTeam/main/scripts/install.ps1'))) -ProjectPath 'C:\path\to\project'"
 ```
 
 ### Update bản đã cài
@@ -136,19 +136,19 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create
 Chạy lại đúng lệnh cài là script sẽ tự update:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.sh | bash -s -- --global all
+curl -fsSL https://raw.githubusercontent.com/nShieldSolo/AgentTeam/main/scripts/install.sh | bash -s -- --global all
 ```
 
 Hoặc dùng rõ mode update cho project hiện tại:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.sh | bash -s -- --update
+curl -fsSL https://raw.githubusercontent.com/nShieldSolo/AgentTeam/main/scripts/install.sh | bash -s -- --update
 ```
 
 Windows PowerShell:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.ps1'))) -Update"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/nShieldSolo/AgentTeam/main/scripts/install.ps1'))) -Update"
 ```
 
 Cơ chế update:
@@ -166,37 +166,37 @@ Cơ chế update:
 Cài global Cursor subagents vào `~/.cursor/agents`:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.sh | bash -s -- --global cursor
+curl -fsSL https://raw.githubusercontent.com/nShieldSolo/AgentTeam/main/scripts/install.sh | bash -s -- --global cursor
 ```
 
 Cài global Codex skill vào `~/.codex/skills/lammuon-team`:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.sh | bash -s -- --global codex
+curl -fsSL https://raw.githubusercontent.com/nShieldSolo/AgentTeam/main/scripts/install.sh | bash -s -- --global codex
 ```
 
 Cài cả hai:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.sh | bash -s -- --global all
+curl -fsSL https://raw.githubusercontent.com/nShieldSolo/AgentTeam/main/scripts/install.sh | bash -s -- --global all
 ```
 
 Windows PowerShell cài global Cursor:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.ps1'))) -Mode cursor"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/nShieldSolo/AgentTeam/main/scripts/install.ps1'))) -Mode cursor"
 ```
 
 Windows PowerShell cài global Codex:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.ps1'))) -Mode codex"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/nShieldSolo/AgentTeam/main/scripts/install.ps1'))) -Mode codex"
 ```
 
 Windows PowerShell cài cả hai:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.ps1'))) -Mode all"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/nShieldSolo/AgentTeam/main/scripts/install.ps1'))) -Mode all"
 ```
 
 Lưu ý: Cursor Project Rules vẫn là project-scoped trong `.cursor/rules`. Cài global Cursor ở trên chỉ cài subagents; nếu muốn rule chạy chắc trong một repo cụ thể, vẫn nên chạy lệnh cài project trong repo đó.
