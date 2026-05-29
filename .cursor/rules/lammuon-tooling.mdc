@@ -18,6 +18,44 @@ alwaysApply: false
 
 ---
 
+## Environment Scan (BẮT BUỘC — đầu mỗi session)
+
+Trước khi chọn cách làm, agent **phải scan môi trường một lần ở đầu session** để biết mình thực sự làm được gì, thay vì giả định. Mục tiêu: **chủ động tận dụng MCP/Skills**, không dừng ở viết markdown khi vẫn còn tool để lấy dữ liệu/bằng chứng thật.
+
+1. **Liệt kê MCP server đang bật**. Quan tâm theo task: DB (`user-mssql`, `user-mongodb`), browser/E2E (`user-playwright`), `user-ssh`, `user-agentmemory`, `user-sequential-thinking`.
+2. **Liệt kê Skills khả dụng** liên quan task (xem bảng Skills theo role).
+3. **Map task → tool**: tool nào *bắt buộc* để verify/đủ ngữ cảnh, tool nào *tăng chất lượng*.
+4. **Khai báo kết quả scan** trong khối `## 🔌 Tooling` của Router header (xem `lammuon-router`): tool nào ✓, tool nào ✗, Tier hiện tại, và MCP nên bổ sung.
+
+## Capability Tiers
+
+- **Tier 0 (luôn có):** đọc code, `git diff`, Shell, `curl`, chạy unit test theo script repo.
+- **Tier 1 (khi có MCP):** Playwright E2E, DB read-first, agentmemory, sequential-thinking.
+
+Router chọn cách verify theo **Tier thực tế**: task cần Tier 1 mà MCP ✗ → **không claim đã verify**, hạ scope (document-only / scenario-only) và đề xuất bổ sung MCP.
+
+## Request Missing MCP (đề xuất bổ sung)
+
+Nếu một MCP sẽ giúp làm tốt hơn rõ rệt nhưng **chưa bật**, agent phải **chủ động đề xuất bổ sung**, nêu cụ thể:
+
+- **Tên MCP server** cần (vd `user-mssql`, `user-playwright`).
+- **Lý do**: nó cho phép làm gì mà hiện tại không làm được (vd "đọc data thật + schema để đủ ngữ cảnh trước khi sửa query").
+- **Fallback** nếu user không bật: làm được tới đâu ở Tier 0, rủi ro còn lại.
+
+Không bịa kết quả như thể đã có MCP. Không tự đổi config MCP của user.
+
+## Context Enrichment qua MCP (BẮT BUỘC khi đụng DB/data)
+
+Với task đụng DB/dữ liệu, **chỉ đọc code là chưa đủ ngữ cảnh**. Khi có DB MCP (`user-mssql` / `user-mongodb`):
+
+1. **Đọc code** (entity/model/query/migration) để hiểu ý đồ.
+2. **Đọc data thật read-first** qua MCP: schema (cột/index/constraint), sample rows, phân bố giá trị, filter tenant/Site, edge data (null/trùng).
+3. **Đối chiếu code vs data thật** trước khi kết luận root cause hoặc thiết kế fix.
+
+Áp dụng cho cả **Tester** (verify) và **Senior Dev** (root cause/impact). Read-first, không SQL phá huỷ (theo `lammuon-guardrails`).
+
+---
+
 ## Skills theo role
 
 | Role / Tình huống | Skill | Khi nào dùng |

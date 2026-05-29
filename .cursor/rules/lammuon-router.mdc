@@ -85,6 +85,11 @@ Following **Làm Mướn Team** rule.
 - Execution Mode: <Analyze Only | Plan Only | Implement | Verify Only | Full Cycle>
 - Test Case Gate: <Chưa xuất | Đã xuất TC-001.. | Không áp dụng: Analyze Only/Plan Only>
 
+## 🔌 Tooling
+- MCP: <user-mssql ✓ | user-playwright ✗ | ...>   (✓ = đang bật, ✗ = thiếu)
+- Tier: <Tier 0 (code+shell) | Tier 1 (+MCP)>
+- Nên bổ sung: <tên MCP + lý do, hoặc "Không">
+
 ## 🔄 Flow — Bước <i>/<n>
 | # | Trạng thái | Agent | Việc (tóm tắt 1 dòng) |
 |---|---|---|---|
@@ -106,6 +111,12 @@ Following **Làm Mướn Team** rule.
 - Mỗi lần một agent bắt đầu/kết thúc, **vẽ lại bảng Flow** với trạng thái mới để user thấy tiến độ.
 - Số dòng và nội dung cột "Việc" phải khớp Flow của team đã chọn (xem mục Team Definitions).
 
+### Khối 🔌 Tooling (BẮT BUỘC scan đầu phiên)
+
+- Đầu mỗi session, **scan môi trường** (MCP đang bật + Skills khả dụng) theo `lammuon-tooling`, rồi khai báo ở khối `## 🔌 Tooling`.
+- Task cần Tier 1 (E2E/DB) mà MCP ✗ → **không claim đã verify**; ghi rõ ở dòng `Nên bổ sung` MCP cần + lý do, hạ scope về document/scenario-only.
+- Task đụng DB/data và có DB MCP → ưu tiên **đọc data thật read-first + đọc code** để đủ ngữ cảnh trước khi kết luận (xem `lammuon-tooling` › Context Enrichment).
+
 ### Compact mode (task nhỏ)
 
 Với task **rất nhỏ / 1 bước** (typo, đổi 1 dòng text, đổi config nhỏ, câu hỏi nhanh, xem nhanh) → **BỎ bảng Flow đầy đủ**, chỉ in khối Router gọn:
@@ -120,6 +131,8 @@ Following **Làm Mướn Team** rule.
 ```
 
 Nếu task nhỏ nhưng có action/implement, vẫn phải xuất mini `## Test Cases` trước khi sửa. Task thật (nhiều bước / nhiều agent / bug cần verify / feature / mapping / refactor) → vẫn vẽ **bảng 🔄 Flow đầy đủ** như trên. Khi phân vân → dùng bảng đầy đủ.
+
+Ở compact mode có thể bỏ khối `🔌 Tooling`, nhưng nếu task cần MCP (DB/E2E) thì vẫn thêm 1 dòng `🔌 Tooling: <tier + MCP thiếu>` để user biết phạm vi verify.
 
 ### Khi cần giải thích thêm
 
@@ -699,9 +712,9 @@ Use this exact order:
 2. Quick issue review: detect task type, scope, expected-behavior clarity, and risk areas.
 3. Select smallest safe team size (Tester/Small/Medium/Large) BEFORE starting any agent work.
 4. Select agents.
-5. Select skills + MCP theo role/task (xem lammuon-tooling). Không gọi tool thừa.
+5. Scan môi trường (MCP đang bật + Skills), xác định Tier, chọn tool tối thiểu (xem lammuon-tooling); khai báo ở khối 🔌 Tooling. Thiếu MCP có ích → đề xuất bổ sung. Không gọi tool thừa.
 6. Select execution mode.
-7. Produce required response header with selected team size and reason.
+7. Produce required response header with selected team size, reason, và khối 🔌 Tooling.
 8. Start the selected flow only after team size is declared.
 9. Export visible test cases BEFORE any side-effect action/implement.
 10. Use SpecKit ONLY for Large Team (lammuon-speckit rule). Tester/Small/Medium: bỏ SpecKit, dùng output template tương ứng + lammuon-testing.

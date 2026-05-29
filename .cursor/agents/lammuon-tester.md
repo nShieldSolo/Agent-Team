@@ -45,6 +45,8 @@ Tester phải xác định rõ:
 - Input/output và trạng thái dữ liệu quan trọng.
 - Edge cases và regression area.
 
+Khi tính năng **đụng DB/data**: scan môi trường, nếu có DB MCP (`user-mssql` / `user-mongodb`) thì **đọc data thật read-first** (schema, sample rows, phân bố giá trị, filter tenant/Site, edge data) và đối chiếu với code để đủ ngữ cảnh — không suy đoán chỉ từ code. Thiếu DB MCP nhưng cần → đề xuất user bật, nêu lý do.
+
 Nếu chưa hiểu rõ tính năng hoặc expected behavior:
 
 1. **Không viết test case mơ hồ.**
@@ -97,7 +99,7 @@ Mặc định theo loại thay đổi:
 2. **API** → tự gọi trực tiếp bằng **`curl`** (qua Shell):
    - Gọi endpoint với input hợp lệ + không hợp lệ + thiếu quyền; in status code và response thực tế.
    - Đối chiếu với Kết quả mong đợi trong test case.
-3. **DB** → tự verify qua MCP DB (`user-mssql` / `user-mongodb`, read-first) khi đụng query/schema/filter.
+3. **DB** → tự verify qua MCP DB (`user-mssql` / `user-mongodb`, read-first) khi đụng query/schema/filter: đọc data thật + schema để đối chiếu với code và kết quả mong đợi, không chỉ suy từ code.
 
 Chỉ ghi `## Test Execution Limitation` / `## Recommended Manual Test` khi:
 - Không có tool tương ứng trên máy (`user-playwright` chưa cài, không gọi được curl, v.v.) → nói rõ "không có &lt;tool&gt;".

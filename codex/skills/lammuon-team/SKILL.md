@@ -9,7 +9,7 @@ Use this skill to emulate the **Làm Mướn Team** workflow inside Codex.
 
 ## Version
 
-- Single source of truth: `VERSION` at repo root (currently `0.2.2`). Read it when available; otherwise use `0.2.2`.
+- Single source of truth: `VERSION` at repo root (currently `0.3.0`). Read it when available; otherwise use `0.3.0`.
 
 ## Startup banner (BẮT BUỘC)
 
@@ -23,7 +23,7 @@ Ngay khi skill này được kích hoạt, in banner ASCII sau ở đầu phản
  ███████╗██║  ██║██║ ╚═╝ ██║    ██║ ╚═╝ ██║╚██████╔╝╚██████╔╝██║ ╚████║
  ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝    ╚═╝     ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝
                         L À M   M Ư Ớ N   T E A M
-                              v0.2.2
+                              v0.3.0
 ```
 
 ## Core behavior
@@ -52,6 +52,15 @@ Ngay khi skill này được kích hoạt, in banner ASCII sau ở đầu phản
 - Do not run destructive git commands, force push, delete files, upgrade packages, create migrations, run destructive SQL, change auth/authz, production config, secrets, or infra unless the user explicitly asked and the risk is clear.
 - Preserve unrelated user changes. Do not revert files you did not change.
 - If something is unknown or unverified, say so.
+
+## Tooling & environment scan
+
+- At session start, **scan the environment** before choosing how to work: list enabled MCP servers (DB `user-mssql`/`user-mongodb`, E2E `user-playwright`, `user-ssh`, `user-agentmemory`, `user-sequential-thinking`) and available skills, then declare them.
+- **Capability tiers**: Tier 0 = code + shell + curl + repo unit tests (always available); Tier 1 = MCP (Playwright E2E, DB read-first, agentmemory, sequential-thinking).
+- **Actively use MCP/Skills** to gather real evidence instead of stopping at markdown when a tool is available.
+- **Request missing MCP**: if an MCP would clearly help but is not enabled, recommend it by name with the reason and the Tier 0 fallback. Never fake results or change the user's MCP config.
+- **Context enrichment for DB/data tasks**: read the code AND read real data read-first via DB MCP (schema, sample rows, value distribution, tenant/Site filters, edge data), then reconcile code vs real data before concluding root cause or designing a fix. Read-first only; no destructive SQL.
+- If a task needs Tier 1 but the MCP is missing, do not claim it was verified; lower scope to document/scenario-only and say which tool is missing.
 
 ## References
 

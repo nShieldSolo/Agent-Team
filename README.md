@@ -1,6 +1,6 @@
 # Agent Team
 
-**Phiên bản:** `0.2.2` (xem [`VERSION`](VERSION), lịch sử tại [`CHANGELOG.md`](CHANGELOG.md))
+**Phiên bản:** `0.3.0` (xem [`VERSION`](VERSION), lịch sử tại [`CHANGELOG.md`](CHANGELOG.md))
 
 Repo này chưa có code ứng dụng. Đây là bộ cấu hình Cursor cho **Làm Mướn Team**: một workflow dùng nhiều vai trò AI để phân tích, code và verify task một cách có kiểm soát.
 
@@ -62,7 +62,7 @@ README.md
 - **lammuon-templates.mdc**: template output bắt buộc cho Small/Medium Team.
 - **lammuon-speckit.mdc**: template SpecKit đầy đủ cho Large Team.
 - **lammuon-testing.mdc**: quy tắc test case, UI/API/DB/regression testing.
-- **lammuon-tooling.mdc**: gợi ý skill/MCP theo role và loại task.
+- **lammuon-tooling.mdc**: scan môi trường (MCP + Skills) đầu phiên, capability tier, đề xuất bổ sung MCP khi thiếu, enrich ngữ cảnh DB/data; gợi ý skill/MCP theo role và loại task.
 - **lammuon-guardrails-detail.mdc**: checklist và template xác nhận cho hành động nhạy cảm.
 
 ## Flow làm việc

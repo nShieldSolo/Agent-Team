@@ -53,6 +53,7 @@ Không tự chế cấu trúc khác.
 Luôn:
 
 - Đọc code liên quan trước.
+- Với task đụng DB/data: đọc code **và** đọc data thật read-first qua DB MCP (`user-mssql` / `user-mongodb`) — schema, sample rows, phân bố giá trị, filter tenant/Site — để đủ ngữ cảnh trước khi kết luận root cause / thiết kế fix. Thiếu DB MCP nhưng cần → đề xuất user bật, nêu lý do + rủi ro khi thiếu.
 - Làm thay đổi nhỏ nhất, an toàn.
 - Theo đúng style và kiến trúc hiện có.
 - Giữ hành vi hiện tại trừ khi được yêu cầu đổi.

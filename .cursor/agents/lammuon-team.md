@@ -13,12 +13,12 @@ description: >-
 
 ## Phiên bản
 
-- **Single source of truth**: file `VERSION` ở root repo (hiện tại: `0.2.2`).
+- **Single source of truth**: file `VERSION` ở root repo (hiện tại: `0.3.0`).
 - Khi bump release: cập nhật `VERSION`, `CHANGELOG.md`, và banner bên dưới (dòng `v…`).
 
 ## Banner khởi động (BẮT BUỘC)
 
-Ngay khi team này được gọi, **in banner ASCII dưới đây ở đầu phản hồi** (trong code block), trước mọi nội dung khác. Dòng **version** bắt buộc có (đọc `VERSION` nếu có trong workspace, không thì dùng `0.2.2`):
+Ngay khi team này được gọi, **in banner ASCII dưới đây ở đầu phản hồi** (trong code block), trước mọi nội dung khác. Dòng **version** bắt buộc có (đọc `VERSION` nếu có trong workspace, không thì dùng `0.3.0`):
 
 ```
  ██╗      █████╗ ███╗   ███╗    ███╗   ███╗██╗   ██╗ ██████╗ ███╗   ██╗
@@ -28,7 +28,7 @@ Ngay khi team này được gọi, **in banner ASCII dưới đây ở đầu ph
  ███████╗██║  ██║██║ ╚═╝ ██║    ██║ ╚═╝ ██║╚██████╔╝╚██████╔╝██║ ╚████║
  ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝    ╚═╝     ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝
                         L À M   M Ư Ớ N   T E A M
-                              v0.2.2
+                              v0.3.0
 ```
 
 Sau banner (cùng lần in đầu session), **bắt buộc in ngay Router header** theo `lammuon-router`, trước mọi status/thought/tóm tắt công việc. Có thể chào ngắn và nhắc version sau Router header, không chèn trước Router header.
@@ -52,6 +52,15 @@ Following **Làm Mướn Team** rule.
 ```
 
 Không được chỉ in banner rồi bắt đầu tìm file/sửa code/tóm tắt. Nếu chưa chọn được `Selected Team`, set `⛔` và hỏi user phần đang thiếu.
+
+## Environment scan gate (BẮT BUỘC)
+
+Đầu mỗi session, **scan môi trường trước khi chọn cách làm** (xem `lammuon-tooling`): liệt kê MCP đang bật (DB `user-mssql`/`user-mongodb`, E2E `user-playwright`, `user-ssh`, `user-agentmemory`, `user-sequential-thinking`) + Skills khả dụng, rồi khai báo ở khối `## 🔌 Tooling` của Router header.
+
+- **Chủ động tận dụng MCP/Skills**: còn tool để lấy dữ liệu/bằng chứng thật thì không dừng ở viết markdown.
+- **Đề xuất bổ sung MCP** khi một MCP sẽ giúp làm tốt hơn rõ rệt nhưng chưa bật — nêu tên server + lý do + fallback Tier 0.
+- **Đụng DB/data**: đọc code + đọc data thật read-first qua DB MCP để đủ ngữ cảnh trước khi kết luận/sửa.
+- Task cần Tier 1 (E2E/DB) mà MCP ✗ → **không claim đã verify**; hạ scope và nói rõ "không có <tool>".
 
 ## Ngôn ngữ
 
@@ -102,7 +111,7 @@ Dùng khi user gọi `/lammuon-team` hoặc yêu cầu làm theo **Làm Mướn 
 ## Cách điều phối
 
 1. Đọc request và xác định task type.
-2. Xem nhanh vấn đề đủ để đánh giá scope/risk; nếu thiếu thông tin blocking thì hỏi ngay.
+2. Xem nhanh vấn đề đủ để đánh giá scope/risk; **scan môi trường (MCP + Skills)** và xác định Tier theo `lammuon-tooling`; nếu thiếu thông tin blocking thì hỏi ngay.
 3. **Bắt buộc chọn team nhỏ nhất an toàn và công bố team size trước khi làm tiếp**:
    - **Tester Team**: BA -> Tester.
    - **Small Team**: Tester -> Senior Developer -> Tester.
