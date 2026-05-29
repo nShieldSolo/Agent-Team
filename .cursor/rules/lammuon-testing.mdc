@@ -16,6 +16,8 @@ Tester owns test design and verification.
 
 Senior Developer must support testability.
 
+> **Source of truth cho FORMAT output**: `lammuon-templates` (Small/Medium) và `lammuon-speckit` (Large). File này định nghĩa **khi nào test gì + loại case cần có theo scenario**, KHÔNG phải nơi định nghĩa cấu trúc output. Bảng mẫu dưới đây chỉ minh hoạ loại case; cấu trúc bảng/heading luôn lấy theo `lammuon-templates`. Nếu lệch nhau → theo `lammuon-templates`.
+
 ---
 
 ## Language Rule

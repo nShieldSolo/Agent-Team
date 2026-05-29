@@ -14,6 +14,7 @@ alwaysApply: false
 2. **Smallest team, smallest tool**: ưu tiên không tool; chỉ leo thang khi cần.
 3. **Read-first với MCP DB/SSH**: đọc trước, không thao tác phá huỷ (theo `lammuon-guardrails`).
 4. **Browser MCP**: chuẩn hoá **`user-playwright`**. KHÔNG dùng `cursor-ide-browser` / `user-chrome-devtools` trừ khi user yêu cầu rõ.
+5. **Fallback khi tool không có**: skill/MCP liệt kê ở đây có thể KHÔNG tồn tại trên máy khác. Nếu skill/MCP cần dùng không có sẵn → **nói rõ "không có <tool>"**, nêu fallback (thao tác thủ công / tool tương đương / hỏi user), KHÔNG giả vờ đã dùng và KHÔNG bịa kết quả.
 
 ---
 
