@@ -26,6 +26,15 @@ Workflow SpecKit (Large Team):
 Spec -> Plan -> Tasks -> Analyze -> Implement -> Verify
 ```
 
+## Test Case Export Gate (BẮT BUỘC)
+
+Large Team chỉ được chuyển sang `Implement` khi SpecKit đã export test case visible:
+
+- Phải có phần `### Vietnamese Test Cases`.
+- Test case phải có mã `TC-001`, `TC-002`, ... và kết quả mong đợi rõ.
+- Test case phải bám user stories, acceptance criteria, API/UI/DB/regression risk liên quan.
+- Nếu chưa đủ expected behavior để viết test case, set `⛔` và hỏi user; không implement trước.
+
 ---
 
 ## Small Team & Medium Team — KHÔNG dùng SpecKit

@@ -20,6 +20,7 @@ RULES_DIR = ROOT / ".cursor" / "rules"
 
 FENCE_RE = re.compile(r"^(`{3,})(.*)$")
 REF_RE = re.compile(r"lammuon-[a-z0-9-]+")
+VERSION_RE = re.compile(r"^\d+\.\d+\.\d+\s*$")
 
 
 def known_rule_names() -> set[str]:
@@ -78,6 +79,16 @@ def check_refs(stem: str, text: str, known: set[str]) -> list[str]:
     return errors
 
 
+def check_version() -> list[str]:
+    version_file = ROOT / "VERSION"
+    if not version_file.is_file():
+        return ["thiếu file VERSION ở root"]
+    text = version_file.read_text(encoding="utf-8").strip()
+    if not VERSION_RE.fullmatch(text):
+        return [f"VERSION không đúng semver (ví dụ 0.2.0): {text!r}"]
+    return []
+
+
 def main() -> int:
     known = known_rule_names()
     files = sorted(AGENTS_DIR.glob("*.md")) + sorted(RULES_DIR.glob("*.mdc"))
@@ -86,6 +97,16 @@ def main() -> int:
         return 1
 
     total_errors = 0
+    ver_errors = check_version()
+    if ver_errors:
+        total_errors += len(ver_errors)
+        print("❌ VERSION")
+        for e in ver_errors:
+            print(f"   - {e}")
+    else:
+        ver = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+        print(f"✅ VERSION ({ver})")
+
     for f in files:
         text = f.read_text(encoding="utf-8")
         lines = text.splitlines()

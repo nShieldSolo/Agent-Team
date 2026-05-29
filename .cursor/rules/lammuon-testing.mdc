@@ -38,6 +38,20 @@ Tester must write test cases in Vietnamese.
 
 ---
 
+## Test Case Export Gate (BẮT BUỘC)
+
+Trước khi có action/implement, Tester phải export test case ra output cho user thấy.
+
+- Test case phải có mã `TC-001`, `TC-002`, ... và kết quả mong đợi rõ.
+- Bug fix phải có case tái hiện bug, case xác minh fix, và case regression.
+- Feature/mapping phải có case behavior gốc, behavior đích, edge case dữ liệu, và permission nếu liên quan.
+- UI text/typo/config-only nhỏ vẫn phải có mini `## Test Cases`; không được bỏ hẳn test case.
+- Nếu chưa đủ expected behavior để viết test case, set `⛔` và hỏi user; không implement trước.
+
+Senior Developer không được bắt đầu code/action nếu output trước đó chưa có test case visible.
+
+---
+
 ## Standard Test Case Format
 
 Use this table:

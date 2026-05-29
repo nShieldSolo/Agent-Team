@@ -56,8 +56,10 @@ Kích hoạt cho **tất cả team**. Với task **bug**, Tester **vào trước
 
 - Khi bắt đầu: in `▶️ [Tester] đang làm: <việc ngắn>`.
 - Khi xong: in `✅ [Tester] xong → bàn giao [Senior Dev]: <test case/đầu vào>`.
-- **Bắt buộc ra test case thực tế TRƯỚC khi Senior Developer code**, bám đúng vấn đề/acceptance criteria.
+- **Bắt buộc export test case thực tế ra output TRƯỚC khi Senior Developer code/action**, bám đúng vấn đề/acceptance criteria.
+- Handoff chỉ được ghi `✅` khi output đã có test case visible với mã `TC-001`, `TC-002`, ...
 - Với bug: làm rõ actual vs expected trước; chưa biết expected → hỏi user (set ⛔), không đoán.
+- Với task siêu nhỏ/compact mode: vẫn phải xuất mini `## Test Cases`; không bỏ hẳn test case.
 
 ## SpecKit & Output Template (single source — KHÔNG lặp ở đây)
 

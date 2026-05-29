@@ -29,6 +29,26 @@ Large Team   -> KHÔNG dùng rule này. Dùng lammuon-speckit (template SpecKit 
 4. Mỗi bước kết thúc phải pass **Definition of Done (DoD)** của bước đó (mục cuối rule này).
 5. Nếu thiếu thông tin để điền một section bắt buộc → set `⛔` và hỏi user, không bịa.
 6. Template ở đây là **chuẩn tối thiểu**. Được thêm dòng/cột, **không được bớt** section bắt buộc.
+7. Trước mọi action/implement, test case phải được export ra output với mã `TC-001`, `TC-002`, ...; chưa có test case visible thì không được chuyển sang Senior Dev.
+
+### Test case export gate
+
+- Small Team: bước Tester verify chỉ đạt DoD khi output có `## Tester Analysis` và bảng `### Test Cases`.
+- Medium Team: bước Tester test case chỉ đạt DoD khi output có `## Test Cases` bám từng AC.
+- Task siêu nhỏ/compact mode: vẫn phải xuất mini `## Test Cases` trước action; không cần template dài nếu thật sự chỉ đổi text/typo/config nhỏ.
+- Không đánh dấu bước Tester là `✅` nếu chưa có test case visible.
+
+### Mini Test Cases cho compact mode
+
+Dùng khi task thật sự nhỏ như typo, UI text thuần, config-only nhỏ:
+
+```markdown
+## Test Cases
+| Mã case | Mô tả | Điều kiện | Bước test | Kết quả mong đợi |
+|---|---|---|---|---|
+| TC-001 | Xác minh thay đổi chính | Mở khu vực liên quan | Kiểm tra nội dung/hành vi được yêu cầu | Thay đổi hiển thị/hoạt động đúng |
+| TC-002 | Regression logic không đổi | Flow cũ còn khả dụng | Thực hiện thao tác cũ liên quan | Logic cũ vẫn hoạt động bình thường |
+```
 
 ---
 

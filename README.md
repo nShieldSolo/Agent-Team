@@ -1,5 +1,7 @@
 # Agent Team
 
+**Phiên bản:** `0.2.0` (xem [`VERSION`](VERSION), lịch sử tại [`CHANGELOG.md`](CHANGELOG.md))
+
 Repo này chưa có code ứng dụng. Đây là bộ cấu hình Cursor cho **Làm Mướn Team**: một workflow dùng nhiều vai trò AI để phân tích, code và verify task một cách có kiểm soát.
 
 ## Mục tiêu
@@ -37,6 +39,8 @@ codex/
     lammuon-team/
       SKILL.md
 .gitattributes
+VERSION
+CHANGELOG.md
 README.md
 ```
 

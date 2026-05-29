@@ -7,9 +7,13 @@ description: Use when the user asks to use **Làm Mướn Team**, Agent Team, PM
 
 Use this skill to emulate the **Làm Mướn Team** workflow inside Codex.
 
+## Version
+
+- Single source of truth: `VERSION` at repo root (currently `0.2.0`). Read it when available; otherwise use `0.2.0`.
+
 ## Startup banner (BẮT BUỘC)
 
-Ngay khi skill này được kích hoạt, in banner ASCII sau ở đầu phản hồi (trong code block), **đúng một lần mỗi session** — các tin nhắn sau trong cùng session không lặp lại:
+Ngay khi skill này được kích hoạt, in banner ASCII sau ở đầu phản hồi (trong code block), **đúng một lần mỗi session** — các tin nhắn sau trong cùng session không lặp lại. **Bắt buộc** có dòng `v{version}` dưới tên team:
 
 ```
  ██╗      █████╗ ███╗   ███╗    ███╗   ███╗██╗   ██╗ ██████╗ ███╗   ██╗
@@ -19,6 +23,7 @@ Ngay khi skill này được kích hoạt, in banner ASCII sau ở đầu phản
  ███████╗██║  ██║██║ ╚═╝ ██║    ██║ ╚═╝ ██║╚██████╔╝╚██████╔╝██║ ╚████║
  ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝    ╚═╝     ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝
                         L À M   M Ư Ớ N   T E A M
+                              v0.2.0
 ```
 
 ## Core behavior
