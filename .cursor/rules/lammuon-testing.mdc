@@ -16,6 +16,18 @@ Tester owns test design and verification.
 
 Senior Developer must support testability.
 
+## Execution Mandate (BẮT BUỘC — Tester tự chạy)
+
+Tester **phải tự thực thi test**, KHÔNG đẩy việc test sang user. Mặc định theo loại thay đổi:
+
+| Loại thay đổi | Cách Tester tự chạy |
+|---|---|
+| UI / flow web | Playwright qua MCP `user-playwright` (thao tác + assert + screenshot) |
+| API | Gọi trực tiếp bằng `curl` (Shell), in status code + response thực tế |
+| DB | MCP `user-mssql` / `user-mongodb` (read-first) |
+
+"Recommended Manual Test" là **fallback cuối**, chỉ dùng khi: không có tool tương ứng trên máy, hoặc thiếu thông tin blocking (URL/account/env) đã hỏi user mà chưa có. Khi đó phải nói rõ "không có &lt;tool&gt;" hoặc thông tin còn thiếu. **Không** viết "vui lòng test thủ công" khi vẫn còn cách tự chạy.
+
 > **Source of truth cho FORMAT output**: `lammuon-templates` (Small/Medium) và `lammuon-speckit` (Large). File này định nghĩa **khi nào test gì + loại case cần có theo scenario**, KHÔNG phải nơi định nghĩa cấu trúc output. Bảng mẫu dưới đây chỉ minh hoạ loại case; cấu trúc bảng/heading luôn lấy theo `lammuon-templates`. Nếu lệch nhau → theo `lammuon-templates`.
 
 ---
@@ -117,6 +129,8 @@ Use API tests when:
 * Status code changes.
 * Integration behavior changes.
 
+**Tester tự gọi `curl`** cho từng case (hợp lệ / không hợp lệ / thiếu quyền), in status code + response thật, rồi đối chiếu cột Kết quả mong đợi. Không yêu cầu user tự gọi API.
+
 Template:
 
 ```markdown
@@ -152,12 +166,14 @@ Must check:
 
 ## UI Automation Rule
 
-If web automation framework exists and UI behavior changes:
+When UI behavior changes, Tester **tự chạy verify bằng Playwright (`user-playwright`)** theo reproduction steps và chụp screenshot/log làm bằng chứng.
+
+If web automation framework exists in repo:
 
 * Add/update automation test.
 * Especially for button text, labels, validation messages, important flow behavior.
 
-If no automation is added, state:
+If no automation is added (chỉ khi không có tool hoặc thiếu URL/account), state:
 
 ```markdown
 ## UI Automation Not Added

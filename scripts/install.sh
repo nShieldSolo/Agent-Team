@@ -5,6 +5,11 @@ REPO_URL="${LAMMUON_AGENT_REPO:-https://github.com/nShieldSolo/Agent-Team}"
 BRANCH="${LAMMUON_AGENT_BRANCH:-main}"
 MODE="project"
 TARGET_DIR="$PWD"
+UPDATE_REQUESTED=0
+INSTALLED=0
+UPDATED=0
+UNCHANGED=0
+BACKED_UP=0
 
 usage() {
   cat <<'EOF'
@@ -13,6 +18,7 @@ Install lammuon Cursor agents/rules into a project.
 Usage:
   scripts/install.sh [target-project-dir]
   scripts/install.sh --project [target-project-dir]
+  scripts/install.sh --update [target-project-dir]
   scripts/install.sh --global cursor
   scripts/install.sh --global codex
   scripts/install.sh --global all
@@ -20,6 +26,7 @@ Usage:
 Examples:
   scripts/install.sh
   scripts/install.sh /path/to/project
+  scripts/install.sh --update
   scripts/install.sh --global cursor
   scripts/install.sh --global codex
   scripts/install.sh --global all
@@ -48,6 +55,13 @@ while [[ $# -gt 0 ]]; do
       MODE="project"
       TARGET_DIR="${2:-$PWD}"
       [[ $# -ge 2 ]] && shift
+      ;;
+    --update)
+      UPDATE_REQUESTED=1
+      if [[ "${2:-}" != "" && "${2:-}" != --* ]]; then
+        TARGET_DIR="$2"
+        shift
+      fi
       ;;
     --global)
       MODE="${2:-}"
@@ -85,71 +99,148 @@ require_cmd() {
   fi
 }
 
+reset_stats() {
+  INSTALLED=0
+  UPDATED=0
+  UNCHANGED=0
+  BACKED_UP=0
+}
+
+sync_file() {
+  local source="$1"
+  local dest="$2"
+  local stamp="$3"
+
+  if [[ -e "$dest" ]]; then
+    if cmp -s "$source" "$dest"; then
+      UNCHANGED=$((UNCHANGED + 1))
+      return 0
+    fi
+    cp "$dest" "$dest.bak.$stamp"
+    BACKED_UP=$((BACKED_UP + 1))
+    cp "$source" "$dest"
+    UPDATED=$((UPDATED + 1))
+    return 0
+  fi
+
+  cp "$source" "$dest"
+  INSTALLED=$((INSTALLED + 1))
+}
+
+source_revision() {
+  local source_dir="$1"
+  local rev
+
+  if command -v git >/dev/null 2>&1; then
+    if git -C "$source_dir" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+      rev="$(git -C "$source_dir" rev-parse HEAD 2>/dev/null || true)"
+      if [[ -n "$rev" ]]; then
+        if ! git -C "$source_dir" diff --quiet -- . 2>/dev/null || ! git -C "$source_dir" diff --cached --quiet -- . 2>/dev/null; then
+          rev="$rev-dirty"
+        fi
+        printf '%s\n' "$rev"
+        return 0
+      fi
+    fi
+
+    rev="$(git ls-remote "$REPO_URL" "refs/heads/$BRANCH" 2>/dev/null | awk '{print $1}' | head -n 1 || true)"
+    if [[ -n "$rev" ]]; then
+      printf '%s\n' "$rev"
+      return 0
+    fi
+  fi
+
+  printf 'unknown\n'
+}
+
+write_state() {
+  local state_file="$1"
+  local source_dir="$2"
+  local scope="$3"
+  local revision installed_at
+
+  revision="$(source_revision "$source_dir")"
+  installed_at="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+
+  mkdir -p "$(dirname "$state_file")"
+  {
+    printf 'scope=%s\n' "$scope"
+    printf 'repo_url=%s\n' "$REPO_URL"
+    printf 'branch=%s\n' "$BRANCH"
+    printf 'revision=%s\n' "$revision"
+    printf 'installed_at=%s\n' "$installed_at"
+  } > "$state_file"
+}
+
+print_summary() {
+  local label="$1"
+  local location="$2"
+  local state_file="$3"
+  local total
+  total=$((INSTALLED + UPDATED + UNCHANGED))
+
+  echo "$label: $location"
+  echo "Files: $total total, $INSTALLED new, $UPDATED updated, $UNCHANGED unchanged, $BACKED_UP backed up"
+  echo "State: $state_file"
+}
+
 copy_lammuon_files() {
   local source_dir="$1"
   local target_dir="$2"
-  local stamp
+  local stamp state_file
   stamp="$(date +%Y%m%d%H%M%S)"
+  state_file="$target_dir/.cursor/lammuon-agent.state"
+  reset_stats
 
   mkdir -p "$target_dir/.cursor/agents" "$target_dir/.cursor/rules"
 
-  local copied=0
   local file dest
   for file in "$source_dir"/.cursor/agents/lammuon-*.md; do
     [[ -e "$file" ]] || continue
     dest="$target_dir/.cursor/agents/$(basename "$file")"
-    if [[ -e "$dest" ]] && ! cmp -s "$file" "$dest"; then
-      cp "$dest" "$dest.bak.$stamp"
-    fi
-    cp "$file" "$dest"
-    copied=$((copied + 1))
+    sync_file "$file" "$dest" "$stamp"
   done
 
   for file in "$source_dir"/.cursor/rules/lammuon-*.mdc; do
     [[ -e "$file" ]] || continue
     dest="$target_dir/.cursor/rules/$(basename "$file")"
-    if [[ -e "$dest" ]] && ! cmp -s "$file" "$dest"; then
-      cp "$dest" "$dest.bak.$stamp"
-    fi
-    cp "$file" "$dest"
-    copied=$((copied + 1))
+    sync_file "$file" "$dest" "$stamp"
   done
 
-  if [[ "$copied" -eq 0 ]]; then
+  if [[ $((INSTALLED + UPDATED + UNCHANGED)) -eq 0 ]]; then
     echo "No lammuon agent/rule files found in source: $source_dir" >&2
     exit 1
   fi
 
-  echo "Installed $copied lammuon files into: $target_dir/.cursor"
+  write_state "$state_file" "$source_dir" "project"
+  print_summary "Synced lammuon project files" "$target_dir/.cursor" "$state_file"
   echo "Restart Cursor or reload the window if the agents/rules do not appear immediately."
 }
 
 copy_cursor_global_agents() {
   local source_dir="$1"
   local target_dir="${HOME}/.cursor/agents"
-  local stamp
+  local stamp state_file
   stamp="$(date +%Y%m%d%H%M%S)"
+  state_file="$target_dir/.lammuon-agent.state"
+  reset_stats
 
   mkdir -p "$target_dir"
 
-  local copied=0
   local file dest
   for file in "$source_dir"/.cursor/agents/lammuon-*.md; do
     [[ -e "$file" ]] || continue
     dest="$target_dir/$(basename "$file")"
-    if [[ -e "$dest" ]] && ! cmp -s "$file" "$dest"; then
-      cp "$dest" "$dest.bak.$stamp"
-    fi
-    cp "$file" "$dest"
-    copied=$((copied + 1))
+    sync_file "$file" "$dest" "$stamp"
   done
 
-  if [[ "$copied" -eq 0 ]]; then
+  if [[ $((INSTALLED + UPDATED + UNCHANGED)) -eq 0 ]]; then
     echo "No lammuon Cursor agents found in source: $source_dir" >&2
     exit 1
   fi
 
-  echo "Installed $copied Cursor global agents into: $target_dir"
+  write_state "$state_file" "$source_dir" "cursor-global"
+  print_summary "Synced Cursor global agents" "$target_dir" "$state_file"
   echo "Note: Cursor Project Rules still live in each project's .cursor/rules directory."
 }
 
@@ -158,8 +249,10 @@ copy_codex_global_skill() {
   local codex_home="${CODEX_HOME:-$HOME/.codex}"
   local skill_src="$source_dir/codex/skills/lammuon-team"
   local skill_dest="$codex_home/skills/lammuon-team"
-  local stamp
+  local stamp state_file
   stamp="$(date +%Y%m%d%H%M%S)"
+  state_file="$skill_dest/.lammuon-agent.state"
+  reset_stats
 
   if [[ ! -f "$skill_src/SKILL.md" ]]; then
     echo "Codex skill source not found: $skill_src/SKILL.md" >&2
@@ -168,35 +261,24 @@ copy_codex_global_skill() {
 
   mkdir -p "$skill_dest/references/.cursor/agents" "$skill_dest/references/.cursor/rules"
 
-  if [[ -f "$skill_dest/SKILL.md" ]] && ! cmp -s "$skill_src/SKILL.md" "$skill_dest/SKILL.md"; then
-    cp "$skill_dest/SKILL.md" "$skill_dest/SKILL.md.bak.$stamp"
-  fi
-  cp "$skill_src/SKILL.md" "$skill_dest/SKILL.md"
+  sync_file "$skill_src/SKILL.md" "$skill_dest/SKILL.md" "$stamp"
 
-  local copied=1
   local file dest
   for file in "$source_dir"/.cursor/agents/lammuon-*.md; do
     [[ -e "$file" ]] || continue
     dest="$skill_dest/references/.cursor/agents/$(basename "$file")"
-    if [[ -e "$dest" ]] && ! cmp -s "$file" "$dest"; then
-      cp "$dest" "$dest.bak.$stamp"
-    fi
-    cp "$file" "$dest"
-    copied=$((copied + 1))
+    sync_file "$file" "$dest" "$stamp"
   done
 
   for file in "$source_dir"/.cursor/rules/lammuon-*.mdc; do
     [[ -e "$file" ]] || continue
     dest="$skill_dest/references/.cursor/rules/$(basename "$file")"
-    if [[ -e "$dest" ]] && ! cmp -s "$file" "$dest"; then
-      cp "$dest" "$dest.bak.$stamp"
-    fi
-    cp "$file" "$dest"
-    copied=$((copied + 1))
+    sync_file "$file" "$dest" "$stamp"
   done
 
-  echo "Installed Codex global skill into: $skill_dest"
-  echo "Copied $copied files. Restart Codex if the skill is not listed immediately."
+  write_state "$state_file" "$source_dir" "codex-global"
+  print_summary "Synced Codex global skill" "$skill_dest" "$state_file"
+  echo "Restart Codex if the skill is not listed immediately."
 }
 
 install_mode() {

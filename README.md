@@ -15,6 +15,7 @@ Repo này chưa có code ứng dụng. Đây là bộ cấu hình Cursor cho **l
 ```text
 .cursor/
   agents/
+    lammuon-team.md
     lammuon-pm.md
     lammuon-ba.md
     lammuon-tester.md
@@ -29,6 +30,7 @@ Repo này chưa có code ứng dụng. Đây là bộ cấu hình Cursor cho **l
     lammuon-tooling.mdc
 scripts/
   install.sh
+  install.ps1
   check-rules.py
 codex/
   skills/
@@ -40,6 +42,7 @@ README.md
 
 ## Các agent
 
+- **lammuon-team**: router/orchestrator chính; chọn Small/Medium/Large Team và điều phối role.
 - **lammuon-pm**: chỉ dùng cho Large Team; lập plan, chia phase, quản trị scope/risk/rollback.
 - **lammuon-ba**: dùng cho Medium/Large Team; làm rõ yêu cầu, mapping behavior, viết acceptance criteria.
 - **lammuon-tester**: có ở mọi team; verify bug, viết test case, chạy test và regression.
@@ -83,7 +86,7 @@ PM -> BA -> Tester -> Senior Developer -> Tester
 
 ## Cách dùng trong Cursor
 
-### Cài tự động từ GitHub
+### Cài tự động từ GitHub trên macOS/Linux
 
 Cài vào project hiện tại:
 
@@ -98,6 +101,50 @@ curl -fsSL https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts
 ```
 
 Script chỉ copy các file `lammuon-*` vào `.cursor/agents` và `.cursor/rules`. Nếu có file cũ trùng tên và khác nội dung, script sẽ backup file cũ thành `*.bak.<timestamp>` trước khi ghi đè.
+
+### Cài tự động từ GitHub trên Windows
+
+Chạy trong PowerShell tại project muốn cài:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.ps1 | iex"
+```
+
+Cài vào project khác bằng path:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.ps1'))) -ProjectPath 'C:\path\to\project'"
+```
+
+### Update bản đã cài
+
+Chạy lại đúng lệnh cài là script sẽ tự update:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.sh | bash -s -- --global all
+```
+
+Hoặc dùng rõ mode update cho project hiện tại:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.sh | bash -s -- --update
+```
+
+Windows PowerShell:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.ps1'))) -Update"
+```
+
+Cơ chế update:
+
+- File giống nhau: giữ nguyên, báo `unchanged`.
+- File khác nội dung: backup file cũ thành `*.bak.<timestamp>`, rồi ghi bản mới.
+- File chưa có: tạo mới.
+- Script ghi state để trace source/branch/revision:
+  - Project: `.cursor/lammuon-agent.state`
+  - Cursor global: `~/.cursor/agents/.lammuon-agent.state`
+  - Codex global: `~/.codex/skills/lammuon-team/.lammuon-agent.state`
 
 ### Cài global cho Cursor/Codex
 
@@ -119,19 +166,45 @@ Cài cả hai:
 curl -fsSL https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.sh | bash -s -- --global all
 ```
 
+Windows PowerShell cài global Cursor:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.ps1'))) -Mode cursor"
+```
+
+Windows PowerShell cài global Codex:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.ps1'))) -Mode codex"
+```
+
+Windows PowerShell cài cả hai:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/nShieldSolo/Agent-Team/main/scripts/install.ps1'))) -Mode all"
+```
+
 Lưu ý: Cursor Project Rules vẫn là project-scoped trong `.cursor/rules`. Cài global Cursor ở trên chỉ cài subagents; nếu muốn rule chạy chắc trong một repo cụ thể, vẫn nên chạy lệnh cài project trong repo đó.
 
 ### Gọi agent/rule
 
-1. Mở project đã cài bằng Cursor.
-2. Khi làm task dev/bug/feature/test, rule core sẽ yêu cầu nạp `lammuon-router`.
-3. Nếu Cursor không tự kích hoạt đúng rule, gọi rõ bằng cách mention rule cần dùng, ví dụ:
+Trong Cursor, gõ `/lam` rồi chọn:
+
+- `lammuon-team`: dùng mặc định cho hầu hết task; nó đóng vai trò router/orchestrator.
+- `lammuon-ba`: chỉ gọi riêng khi muốn BA phân tích requirement/mapping.
+- `lammuon-pm`: chỉ gọi riêng cho task lớn cần plan/phase/risk.
+- `lammuon-tester`: chỉ gọi riêng khi muốn test case/verify/regression.
+- `lammuon-senior-dev`: chỉ gọi riêng khi muốn implement/debug kỹ thuật.
+
+Ví dụ:
 
 ```text
-@lammuon-router xử lý bug này theo lammuon team
+/lammuon-team xử lý bug này theo lammuon team
 ```
 
-4. Với task nhỏ, ưu tiên Small Team. Chỉ lên Medium/Large khi task cần BA/PM thật sự.
+Lưu ý: `lammuon-router.mdc` là **Cursor Project Rule**, không phải slash command/subagent nên sẽ không hiện trong popup `/lam`. Rule này được dùng nội bộ để hướng dẫn `lammuon-team` chọn flow và team size.
+
+Với task nhỏ, `lammuon-team` sẽ ưu tiên Small Team. Chỉ lên Medium/Large khi task cần BA/PM thật sự.
 
 ## Nguyên tắc bảo trì
 
