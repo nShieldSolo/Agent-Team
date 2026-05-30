@@ -11,6 +11,7 @@ Repo này chưa có code ứng dụng. Đây là bộ cấu hình Cursor cho **L
 - Hỗ trợ **Tester Team** cho luồng chỉ BA + Tester: BA đọc hiểu tính năng, Tester viết scenario rồi test.
 - Chuẩn hóa cách agent giao tiếp, bàn giao và báo cáo tiến độ.
 - Bắt buộc test case tiếng Việt và không khai test pass nếu chưa chạy.
+- Bắt buộc build FE/BE tương ứng sau mọi thay đổi code/config trước khi báo hoàn thành.
 - Giữ guardrail an toàn cho git, file, package, DB, API và infra.
 
 ## Cấu trúc
@@ -62,6 +63,7 @@ README.md
 - **lammuon-templates.mdc**: template output bắt buộc cho Small/Medium Team.
 - **lammuon-speckit.mdc**: template SpecKit đầy đủ cho Large Team.
 - **lammuon-testing.mdc**: quy tắc test case, UI/API/DB/regression testing.
+- **Build gate**: khi Senior Dev thêm/sửa/xoá code hoặc config ảnh hưởng FE/BE, phải chạy build FE/BE tương ứng; build fail thì fix và rerun trước khi báo xong.
 - **lammuon-tooling.mdc**: scan môi trường (MCP + Skills) đầu phiên, capability tier, đề xuất bổ sung MCP khi thiếu, enrich ngữ cảnh DB/data; gợi ý skill/MCP theo role và loại task.
 - **lammuon-guardrails-detail.mdc**: checklist và template xác nhận cho hành động nhạy cảm.
 

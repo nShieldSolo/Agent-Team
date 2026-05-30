@@ -226,6 +226,15 @@ If no automation is added (chỉ khi không có tool hoặc thiếu URL/account)
 
 Never claim tests passed if they were not run.
 
+## Build Evidence Gate (BẮT BUỘC)
+
+Với mọi task có thêm/sửa/xoá code hoặc config ảnh hưởng FE/BE:
+
+- Tester phải kiểm tra Senior Developer đã chạy build FE/BE tương ứng và ghi command + kết quả thật.
+- Nếu thiếu build evidence, không được mark verify pass; trả lại Senior Developer để chạy build.
+- Nếu build fail, Tester không được báo hoàn thành; Senior Developer phải fix rồi rerun build/test.
+- Final test report phải ghi rõ build command đã pass hoặc limitation/blocker nếu không chạy được.
+
 If tests cannot be run, write:
 
 ```markdown

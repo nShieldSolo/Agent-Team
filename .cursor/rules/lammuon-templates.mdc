@@ -171,6 +171,9 @@ Mỗi bước có 2 phần:
 ### Files Changed
 - <danh sách file đã đổi>
 
+### Build / Test Commands Run
+- `<command>` -> <kết quả thật>
+
 ### Why this approach
 - <lý do chọn cách này>
 
@@ -203,6 +206,10 @@ Mỗi bước có 2 phần:
 
 ### Files Changed
 - SurveyForm.tsx (onSubmit), survey.ts (payload type)
+
+### Build / Test Commands Run
+- `npm run build --workspace web` -> pass
+- `npm test -- SurveyForm` -> pass
 
 ### Why this approach
 - Thay đổi nhỏ nhất, không đụng validation chung, giữ kiến trúc.

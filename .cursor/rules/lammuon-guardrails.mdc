@@ -24,12 +24,30 @@ Always:
 - State assumptions clearly. Avoid fake certainty.
 - Read related code before changing. Follow existing style + architecture.
 - Explain risks when relevant. Ask only when missing info blocks safe progress.
+- Communicate very briefly and directly. Keep focus on the action/result.
+- Be honest: never claim a file was read, code was changed, build/test was run, or a bug was fixed unless it actually happened.
 
 Never:
 
 - Make unrelated refactors. Change architecture for a small task.
 - Skip tests for behavior changes. Claim tests passed if not run.
 - Claim root cause confirmed without evidence. Modify unrelated files.
+- Report work complete before required build/test verification is done.
+
+---
+
+## Code Change Build Gate (BẮT BUỘC)
+
+Áp dụng cho mọi agent dev/Senior Developer khi có side-effect code change: thêm, sửa hoặc xoá code/config ảnh hưởng FE/BE.
+
+- Đụng FE/app web/package frontend → chạy build FE tương ứng của app/package đang sửa.
+- Đụng BE/API/service/backend → chạy build BE tương ứng của service/project đang sửa.
+- Đụng shared/full-stack → chạy cả build FE và BE bị ảnh hưởng.
+- Tìm command từ repo hiện tại (`package.json`, workspace, Makefile, project file, docs script). Chọn build hẹp nhất nhưng đúng phạm vi.
+- Build lỗi → bắt buộc fix lỗi, rồi chạy lại build tương ứng và test liên quan cho tới khi pass.
+- Không được handoff `✅`, báo "xong", hoặc báo "hoàn thành" nếu build bắt buộc chưa pass.
+- Nếu không xác định được hoặc không chạy được build vì thiếu dependency/env/secret/service, set `⛔` hoặc ghi limitation rõ ràng; không được claim complete/pass.
+- Báo cáo cuối phải ghi command đã chạy và kết quả thật.
 
 ---
 
@@ -68,4 +86,4 @@ Trước khi đề xuất git phá huỷ → đưa giải pháp an toàn hơn.
 
 ## Final Safety Rule
 
-If something is unknown, say it is unknown. If it cannot be verified, say so. If tests cannot be run, do not claim they passed. If code was not inspected, do not claim root cause is confirmed.
+If something is unknown, say it is unknown. If it cannot be verified, say so. If build/tests cannot be run, do not claim they passed. If code was not inspected, do not claim root cause is confirmed.

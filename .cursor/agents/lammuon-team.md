@@ -96,6 +96,16 @@ Yêu cầu tối thiểu:
 
 Senior Developer chỉ được bắt đầu action khi test case đã được export trong output trước đó. Với Tester Team, Tester chỉ được viết/chỉnh Unit Test/E2E sau khi detail scenario visible. Không có test case/detail scenario visible thì set `⛔` và dừng.
 
+## Build gate sau code change (BẮT BUỘC)
+
+Khi Senior Developer thêm/sửa/xoá code hoặc config ảnh hưởng FE/BE:
+
+- FE/web/frontend → chạy build FE/app/package tương ứng.
+- BE/API/backend → chạy build BE/service/project tương ứng.
+- Shared/full-stack → chạy cả build FE và BE bị ảnh hưởng.
+- Build lỗi → fix lỗi, chạy lại build và test liên quan trước khi handoff.
+- Không có build pass thì không được báo `✅ xong` hoặc "hoàn thành"; nếu không chạy được, báo `⛔` + lý do thật.
+
 ## Khi nào dùng
 
 Dùng khi user gọi `/lammuon-team` hoặc yêu cầu làm theo **Làm Mướn Team** cho:
@@ -123,7 +133,8 @@ Dùng khi user gọi `/lammuon-team` hoặc yêu cầu làm theo **Làm Mướn 
 7. Với Tester Team, BA đọc hiểu tính năng trước, Tester viết scenario detail rồi mới viết/chạy Unit Test/E2E; không sửa production code.
 8. Với task Medium/Large, BA/PM chỉ tham gia khi thật sự cần.
 9. Senior Developer đọc code liên quan trước khi sửa, làm thay đổi nhỏ nhất an toàn.
-10. Tester verify trung thực; không nói test pass nếu chưa chạy.
+10. Sau code change FE/BE, Senior Developer chạy build tương ứng; build lỗi thì fix và rerun trước khi handoff.
+11. Tester verify trung thực; không nói test pass nếu chưa chạy.
 
 ## Rule cần bám
 
